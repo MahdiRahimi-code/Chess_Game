@@ -143,14 +143,48 @@ def check_moves(selected_piece):
         
 def check_soldier_moves(selected_piece):
     if turn == 'white':
-        if selected_piece[0][1] == 6:
-            allowed_moves.append((selected_piece[0][0], selected_piece[0][1]-1))
-            allowed_moves.append((selected_piece[0][0], selected_piece[0][1]-2))
+        enemies = black_locations
+        friends = white_locations
+        location = white_locations[selected_piece[0]]
+
+        if location[1] == 6:
+            if (location[0], location[1]-1) not in enemies and (location[0], location[1]-1) not in friends:
+                allowed_moves.append((location[0], location[1]-1))
+            if (location[0], location[1]-2) not in enemies and (location[0], location[1]-2) not in friends:
+                allowed_moves.append((location[0], location[1]-2))
+            if (location[0]+1, location[1]-1) in enemies:
+                allowed_moves.append((location[0]+1, location[1]-1))
+            if (location[0]-1, location[1]-1) in enemies:
+                allowed_moves.append((location[0]-1, location[1]-1))
+                
+        else:
+            if (location[0], location[1]-1) not in enemies and (location[0], location[1]-1) not in friends:
+                allowed_moves.append((location[0], location[1]-1))
+            if (location[0]+1, location[1]-1) in enemies:
+                allowed_moves.append((location[0]+1, location[1]-1))
+            if (location[0]-1, location[1]-1) in enemies:
+                allowed_moves.append((location[0]-1, location[1]-1))
+
+
+    
+
+
 
 
 def draw_allowed_moves():
-    for i in range(len(allowed_moves)):
-        py.draw.rect(screen, 'gold', (200+ 70*allowed_moves[i][0], 70+ 70*allowed_moves[i][1], 70, 70))
+    if turn == 'white':
+        for i in range(len(allowed_moves)):
+            if allowed_moves[i] in black_locations:
+                py.draw.rect(screen, 'red', (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
+            else:
+                py.draw.rect(screen, (22, 250, 250), (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
+    else:
+        for i in range(len(allowed_moves)):
+            if allowed_moves[i] in white_locations:
+                py.draw.rect(screen, 'red', (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
+            else:
+                py.draw.rect(screen, (22, 250, 250), (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
+        
 
 
 # white or black
@@ -184,6 +218,7 @@ while running:
 
             if (turn == "white"):
                 if (selected_coords in white_locations):
+                    allowed_moves = []
                     index = white_locations.index(selected_coords)
                     selected_piece = [index, white_pieces[index]]
                     if alter == selected_piece:
@@ -193,9 +228,15 @@ while running:
                     alter = selected_piece
 
                 if selected_coords in allowed_moves:
-                        white_locations[index] = selected_coords
-                        selected_piece = [-1, '']
-                        turn = 'black'
+                    allowed_moves = []
+                    white_locations[index] = selected_coords
+                    selected_piece = [-1, '']
+                    #turn = 'black'
+                
+                
+
+                
+
                          
 
 
