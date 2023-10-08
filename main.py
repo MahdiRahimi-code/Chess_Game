@@ -136,9 +136,13 @@ def draw_pieces():
 allowed_moves = []
 
 
+lost_pices_white = []
+lost_pices_black = []
+
 def check_moves(selected_piece):
     if selected_piece[1] == 'soldier':
         check_soldier_moves(selected_piece)
+
     
         
 def check_soldier_moves(selected_piece):
@@ -228,10 +232,19 @@ while running:
                     alter = selected_piece
 
                 if selected_coords in allowed_moves:
-                    allowed_moves = []
-                    white_locations[index] = selected_coords
-                    selected_piece = [-1, '']
-                    #turn = 'black'
+                    if selected_coords in black_locations:
+                        allowed_moves = []
+                        white_locations[index] = selected_coords
+                        selected_piece = [-1, '']
+                        index = black_locations.index(selected_coords)
+                        lost_pices_black.append(black_pieces[index])
+                        black_locations.pop(index)
+                        black_pieces.pop(index)
+                    else:
+                        allowed_moves = []
+                        white_locations[index] = selected_coords
+                        selected_piece = [-1, '']
+                        #turn = 'black'
                 
                 
 
