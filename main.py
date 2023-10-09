@@ -142,6 +142,8 @@ def check_moves(selected_piece):
         check_soldier_moves(selected_piece)
     elif selected_piece[1] == 'horse':
         check_horse_moves(selected_piece)
+    elif selected_piece[1] == 'elephant':
+        check_elephant_moves(selected_piece)
 
     
         
@@ -176,15 +178,60 @@ def check_horse_moves(selected_piece):
     if turn == "white":
         moves = [(2, -1), (-2, -1), (1, -2), (-1, -2),
                 (2, 1), (-2, 1), (1, 2), (-1, 2)]
-        friends = white_locations
+        
         location = white_locations[selected_piece[0]]
 
         for i in range(len(moves)):
             x = location[0] + moves[i][0]
             y = location[1] + moves[i][1]
-            if (x,y) not in friends and (x>=0 and y<=7 and x<=7 and y>=0):
+            if (x,y) not in white_locations and (x>=0 and y<=7 and x<=7 and y>=0):
                 allowed_moves.append((x, y))
 
+
+
+def check_elephant_moves(selected_piece):
+    if turn == "white":
+        enemies = black_locations
+        friends = white_locations
+        
+        x = white_locations[selected_piece[0]][0]
+        y = white_locations[selected_piece[0]][1]
+
+        x1, y1 = x+1, y-1
+        while (x1, y1) not in friends and x1<=7 and y1>=0:
+            if (x1, y1) in enemies:
+                allowed_moves.append((x1, y1))
+                break
+            allowed_moves.append((x1, y1))
+            x1 = x1 + 1
+            y1 = y1 - 1
+        
+        x2, y2 = x-1, y-1
+        while (x2, y2) not in friends and x2>=0 and y2>=0:
+            if (x2, y2) in enemies:
+                allowed_moves.append((x2, y2))
+                break
+            allowed_moves.append((x2, y2))
+            x2 = x2 - 1
+            y2 = y2 - 1
+        
+        x3, y3 = x-1, y+1
+        while (x3, y3) not in friends and x3>=0 and y3<=7:
+            if (x3, y3) in enemies:
+                allowed_moves.append((x3, y3))
+                break
+            allowed_moves.append((x3, y3))
+            x3 = x3 - 1
+            y3 = y3 + 1
+        
+        x4, y4 = x+1, y+1
+        while (x4, y4) not in friends and x4<=7 and y4<=7:
+            if (x4, y4) in enemies:
+                allowed_moves.append((x4, y4))
+                break
+            allowed_moves.append((x4, y4))
+            x4 = x4 + 1
+            y4 = y4 + 1
 
 
 def draw_allowed_moves():
