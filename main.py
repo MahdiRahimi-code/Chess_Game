@@ -104,7 +104,7 @@ def draw_pieces():
             if selected_piece[0] != -1:
                 x = white_locations[selected_piece[0]][0]
                 y = white_locations[selected_piece[0]][1]
-                py.draw.rect(screen, 'red', (200+(x*70), 70+(y*70), 70, 70), 3)
+                py.draw.rect(screen, 'green', (200+(x*70), 70+(y*70), 70, 70), 3)
         
     
     for i in range(len(black_pieces)):
@@ -134,14 +134,14 @@ def draw_pieces():
 
 
 allowed_moves = []
-
-
 lost_pices_white = []
 lost_pices_black = []
 
 def check_moves(selected_piece):
     if selected_piece[1] == 'soldier':
         check_soldier_moves(selected_piece)
+    elif selected_piece[1] == 'horse':
+        check_horse_moves(selected_piece)
 
     
         
@@ -162,16 +162,28 @@ def check_soldier_moves(selected_piece):
                 allowed_moves.append((location[0]-1, location[1]-1))
                 
         else:
-            if (location[0], location[1]-1) not in enemies and (location[0], location[1]-1) not in friends:
-                allowed_moves.append((location[0], location[1]-1))
-            if (location[0]+1, location[1]-1) in enemies:
-                allowed_moves.append((location[0]+1, location[1]-1))
-            if (location[0]-1, location[1]-1) in enemies:
-                allowed_moves.append((location[0]-1, location[1]-1))
+            if (location[1] - 1 >= 0):
+                if (location[0], location[1]-1) not in enemies and (location[0], location[1]-1) not in friends:
+                    allowed_moves.append((location[0], location[1]-1))
+                if (location[0]+1, location[1]-1) in enemies:
+                    allowed_moves.append((location[0]+1, location[1]-1))
+                if (location[0]-1, location[1]-1) in enemies:
+                    allowed_moves.append((location[0]-1, location[1]-1))
 
 
     
+def check_horse_moves(selected_piece):
+    if turn == "white":
+        moves = [(2, -1), (-2, -1), (1, -2), (-1, -2),
+                (2, 1), (-2, 1), (1, 2), (-1, 2)]
+        friends = white_locations
+        location = white_locations[selected_piece[0]]
 
+        for i in range(len(moves)):
+            x = location[0] + moves[i][0]
+            y = location[1] + moves[i][1]
+            if (x,y) not in friends and (x>=0 and y<=7 and x<=7 and y>=0):
+                allowed_moves.append((x, y))
 
 
 
