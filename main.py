@@ -178,6 +178,7 @@ def check_soldier_moves(selected_piece):
                     allowed_moves.append((location[0]-1, location[1]-1))
 
 
+
     
 def check_horse_moves(selected_piece):
     if turn == "white":
@@ -278,6 +279,12 @@ def check_castle_moves(selected_piece):
             y2 += 1
 
 
+def check_queen_moves(selected_piece):
+    check_castle_moves(selected_piece)
+    check_elephant_moves(selected_piece)
+
+
+
 def draw_allowed_moves():
     if turn == 'white':
         for i in range(len(allowed_moves)):
@@ -294,9 +301,33 @@ def draw_allowed_moves():
         
 
 
-def check_queen_moves(selected_piece):
-    check_castle_moves(selected_piece)
-    check_elephant_moves(selected_piece)
+color1 = 'red'  # First color
+color2 = 'blue'  # Second color
+current_color = color1
+flash_interval = 500  # Flash interval in milliseconds
+last_flash_time54 = 0
+def draw_check():
+    global last_flash_time, flash_interval ,current_color , color1 , color2
+    
+    for i in range(len(white_locations)):
+        if white_pieces[i] == "king":
+            king_location = white_locations[i]
+            break
+    if check == True:
+        rect = py.Rect(205+ 70*king_location[0], 75+ 70*king_location[1], 60, 60)
+        current_time = py.time.get_ticks()
+        if current_time - last_flash_time54 >= flash_interval:
+            
+            if current_color == color1:
+                current_color = color2
+            else:
+                current_color = color1
+                
+            last_flash_time = current_time
+
+        if turn == "white":
+            py.draw.rect(screen, current_color, rect)
+
 
 
 # white or black
@@ -306,6 +337,7 @@ selected_piece = [-1, '']
 # variable for disselecting piece
 alter = [-1 , -1]
 running = True
+check = False
 
 while running:
     timer.tick(60)
@@ -313,6 +345,8 @@ while running:
     create_board()
     load_images()
     draw_pieces()
+    
+    draw_check()
 
     if selected_piece[0] != -1:
         check_moves(selected_piece)
