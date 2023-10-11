@@ -208,15 +208,25 @@ def check_soldier_moves(selected_piece):
 
 
 def check_king_moves(selected_piece):
-    x = white_locations[selected_piece[0]][0]
-    y = white_locations[selected_piece[0]][1]
-
     if turn == "white":
+        x = white_locations[selected_piece[0]][0]
+        y = white_locations[selected_piece[0]][1]
         moves = [(1, -1), (1, 0), (1, 1), (0, -1),
         (0, 1), (-1, -1), (-1, 0), (-1, 1)]
 
         for i in range(len(moves)):
             if (x+moves[i][0], y+moves[i][1]) not in white_locations:
+                if (x+moves[i][0])>=0 and (x+moves[i][0])<=7 and (y+moves[i][1])<=7 \
+                    and (y+moves[i][1])>=0:
+                    allowed_moves.append((x+moves[i][0], y+moves[i][1]))
+    if turn == "black":
+        x = black_locations[selected_piece[0]][0]
+        y = black_locations[selected_piece[0]][1]
+        moves = [(1, -1), (1, 0), (1, 1), (0, -1),
+        (0, 1), (-1, -1), (-1, 0), (-1, 1)]
+
+        for i in range(len(moves)):
+            if (x+moves[i][0], y+moves[i][1]) not in black_locations:
                 if (x+moves[i][0])>=0 and (x+moves[i][0])<=7 and (y+moves[i][1])<=7 \
                     and (y+moves[i][1])>=0:
                     allowed_moves.append((x+moves[i][0], y+moves[i][1]))
@@ -429,13 +439,12 @@ while running:
     create_board()
     load_images()
     draw_pieces()
-    
     draw_check()
+
 
     if selected_piece[0] != -1:
         check_moves(selected_piece)
         draw_allowed_moves()
-
 
 
     for event in py.event.get():
