@@ -247,6 +247,18 @@ def check_horse_moves(selected_piece):
             y = location[1] + moves[i][1]
             if (x,y) not in white_locations and (x>=0 and y<=7 and x<=7 and y>=0):
                 allowed_moves.append((x, y))
+                
+    if turn == "black":
+        moves = [(2, -1), (-2, -1), (1, -2), (-1, -2),
+                (2, 1), (-2, 1), (1, 2), (-1, 2)]
+        
+        location = black_locations[selected_piece[0]]
+
+        for i in range(len(moves)):
+            x = location[0] + moves[i][0]
+            y = location[1] + moves[i][1]
+            if (x,y) not in black_locations and (x>=0 and y<=7 and x<=7 and y>=0):
+                allowed_moves.append((x, y))
 
 
 
