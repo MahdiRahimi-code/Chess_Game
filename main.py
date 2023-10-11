@@ -7,8 +7,8 @@ timer = py.time.Clock()
 
 text = py.font.Font(None, 30)
 allowed_moves = []
-lost_pices_white = []
-lost_pices_black = []
+lost_pieces_white = []
+lost_pieces_black = []
 
 
 
@@ -430,11 +430,9 @@ def check_castle_moves(selected_piece):
 
 
 
-
 def check_queen_moves(selected_piece):
     check_castle_moves(selected_piece)
     check_elephant_moves(selected_piece)
-
 
 
 
@@ -465,6 +463,71 @@ def draw_allowed_moves():
             else:
                 py.draw.rect(screen, (22, 250, 250), (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
 
+
+
+def draw_lost_pieces():
+    for i in range(len(lost_pieces_white)):
+        if lost_pieces_white[i] == 'soldier':
+            if i>9:
+                screen.blit(white_soldier, (100, 75 + 60*(i-10)))
+            else:
+                screen.blit(white_soldier, (5, 75 + 60*i))
+
+        elif lost_pieces_white[i] == 'castle':
+            if i>9:
+                screen.blit(white_castle, (100, 75 + 60*(i-10)))
+            else:
+                screen.blit(white_castle, (5, 75 + 60*i))
+        
+        elif lost_pieces_white[i] == 'horse':
+            if i>9:
+                screen.blit(white_horse, (100, 75 + 60*(i-10)))
+            else:
+                screen.blit(white_horse, (5, 75 + 60*i))
+
+        elif lost_pieces_white[i] == 'elephant':
+            if i>9:
+                screen.blit(white_elephant, (100, 75 + 60*(i-10)))
+            else:
+                screen.blit(white_elephant, (5, 75 + 60*i))
+        
+        elif lost_pieces_white[i] == 'queen':
+            if i>9:
+                screen.blit(white_queen, (100, 75 + 60*(i-10)))
+            else:
+                screen.blit(white_queen, (5, 75 + 60*i))
+    
+    for i in range(len(lost_pieces_black)):
+        if lost_pieces_black[i] == 'soldier':
+            if i>9:
+                screen.blit(black_soldier, (860, 75 + 60*(i-10)))
+            else:
+                screen.blit(black_soldier, (785, 75 + 60*i))
+
+        elif lost_pieces_black[i] == 'castle':
+            if i>9:
+                screen.blit(black_castle, (860, 75 + 60*(i-10)))
+            else:
+                screen.blit(black_castle, (785, 75 + 60*i))
+        
+        elif lost_pieces_black[i] == 'horse':
+            if i>9:
+                screen.blit(black_horse, (860, 75 + 60*(i-10)))
+            else:
+                screen.blit(black_horse, (785, 75 + 60*i))
+
+        elif lost_pieces_black[i] == 'elephant':
+            if i>9:
+                screen.blit(black_elephant, (860, 75 + 60*(i-10)))
+            else:
+                screen.blit(black_elephant, (785, 75 + 60*i))
+        
+        elif lost_pieces_black[i] == 'queen':
+            if i>9:
+                screen.blit(black_queen, (860, 75 + 60*(i-10)))
+            else:
+                screen.blit(black_queen, (785, 75 + 60*i))
+        
 
 
 
@@ -531,6 +594,7 @@ while running:
     load_images()
     draw_pieces()
     draw_check()
+    draw_lost_pieces()
 
 
     if selected_piece[0] != -1:
@@ -563,7 +627,7 @@ while running:
                         white_locations[index] = selected_coords
                         selected_piece = [-1, '']
                         index = black_locations.index(selected_coords)
-                        lost_pices_black.append(black_pieces[index])
+                        lost_pieces_black.append(black_pieces[index])
                         black_locations.pop(index)
                         black_pieces.pop(index)
                         turn = 'black'
@@ -590,7 +654,7 @@ while running:
                         black_locations[index] = selected_coords
                         selected_piece = [-1, '']
                         index = white_locations.index(selected_coords)
-                        lost_pices_white.append(white_pieces[index])
+                        lost_pieces_white.append(white_pieces[index])
                         white_locations.pop(index)
                         white_pieces.pop(index)
                         turn = 'white'
