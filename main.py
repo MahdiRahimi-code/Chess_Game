@@ -6,6 +6,9 @@ screen = py.display.set_mode((960, 700))
 timer = py.time.Clock()
 
 text = py.font.Font(None, 30)
+allowed_moves = []
+lost_pices_white = []
+lost_pices_black = []
 
 
 
@@ -128,14 +131,11 @@ def draw_pieces():
 
         if turn == "black":
             if selected_piece[0] != -1:
-                x = white_locations[selected_piece[0]][0]
-                y = white_locations[selected_piece[0]][1]
-                py.draw.rect(screen, 'blue', (200+(x*70), 70+(y*70), 70, 70), 3)        
+                x = black_locations[selected_piece[0]][0]
+                y = black_locations[selected_piece[0]][1]
+                py.draw.rect(screen, 'blue', (200+(x*70), 70+(y*70), 70, 70), 3)
 
 
-allowed_moves = []
-lost_pices_white = []
-lost_pices_black = []
 
 
 def check_moves(selected_piece):
@@ -152,7 +152,8 @@ def check_moves(selected_piece):
     elif selected_piece[1] == 'king':
         check_king_moves(selected_piece)
 
-    
+
+
         
 def check_soldier_moves(selected_piece):
     if turn == 'white':
@@ -178,11 +179,35 @@ def check_soldier_moves(selected_piece):
                     allowed_moves.append((location[0]+1, location[1]-1))
                 if (location[0]-1, location[1]-1) in enemies:
                     allowed_moves.append((location[0]-1, location[1]-1))
+    
+    elif turn == 'black':
+        enemies = white_locations
+        friends = black_locations
+        location = black_locations[selected_piece[0]]
+
+        if location[1] == 1:
+            if (location[0], location[1]+1) not in enemies and (location[0], location[1]+1) not in friends:
+                allowed_moves.append((location[0], location[1]+1))
+            if (location[0], location[1]+2) not in enemies and (location[0], location[1]+2) not in friends:
+                allowed_moves.append((location[0], location[1]+2))
+            if (location[0]-1, location[1]+1) in enemies:
+                allowed_moves.append((location[0]-1, location[1]+1))
+            if (location[0]+1, location[1]+1) in enemies:
+                allowed_moves.append((location[0]+1, location[1]+1))
+                
+        else:
+            if (location[1] + 1 <= 7):
+                if (location[0], location[1]+1) not in enemies and (location[0], location[1]+1) not in friends:
+                    allowed_moves.append((location[0], location[1]+1))
+                if (location[0]-1, location[1]+1) in enemies:
+                    allowed_moves.append((location[0]-1, location[1]+1))
+                if (location[0]+1, location[1]+1) in enemies:
+                    allowed_moves.append((location[0]+1, location[1]+1))
+
 
 
 
 def check_king_moves(selected_piece):
-
     x = white_locations[selected_piece[0]][0]
     y = white_locations[selected_piece[0]][1]
 
@@ -197,7 +222,9 @@ def check_king_moves(selected_piece):
                     allowed_moves.append((x+moves[i][0], y+moves[i][1]))
 
 
-    
+
+
+
 def check_horse_moves(selected_piece):
     if turn == "white":
         moves = [(2, -1), (-2, -1), (1, -2), (-1, -2),
@@ -210,6 +237,8 @@ def check_horse_moves(selected_piece):
             y = location[1] + moves[i][1]
             if (x,y) not in white_locations and (x>=0 and y<=7 and x<=7 and y>=0):
                 allowed_moves.append((x, y))
+
+
 
 
 
@@ -259,6 +288,8 @@ def check_elephant_moves(selected_piece):
 
 
 
+
+
 def check_castle_moves(selected_piece):
     if turn == "white":
         x = white_locations[selected_piece[0]][0]
@@ -297,9 +328,12 @@ def check_castle_moves(selected_piece):
             y2 += 1
 
 
+
+
 def check_queen_moves(selected_piece):
     check_castle_moves(selected_piece)
     check_elephant_moves(selected_piece)
+
 
 
 
@@ -317,6 +351,20 @@ def draw_allowed_moves():
             else:
                 py.draw.rect(screen, (22, 250, 250), (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
         
+    if turn == 'black':
+        for i in range(len(allowed_moves)):
+            if allowed_moves[i] in white_locations:
+                py.draw.rect(screen, 'red', (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
+            else:
+                py.draw.rect(screen, (22, 250, 250), (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
+    else:
+        for i in range(len(allowed_moves)):
+            if allowed_moves[i] in black_locations:
+                py.draw.rect(screen, 'red', (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
+            else:
+                py.draw.rect(screen, (22, 250, 250), (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
+
+
 
 
 color1 = 'red'  # First color
@@ -344,6 +392,7 @@ def draw_check():
                 last_flash_time = current_time
 
             py.draw.rect(screen, current_color, (200+ 70*white_king_location[0], 68+ 70*white_king_location[1], 70, 70), 4)
+    
     else:
         for i in range(len(black_locations)):
             if black_pieces[i] == "king":
@@ -361,6 +410,7 @@ def draw_check():
                 last_flash_time = current_time
 
             py.draw.rect(screen, current_color, (200+ 70*black_king_location[0], 68+ 70*black_king_location[1], 70, 70), 4)
+
 
 
 
@@ -416,11 +466,39 @@ while running:
                         lost_pices_black.append(black_pieces[index])
                         black_locations.pop(index)
                         black_pieces.pop(index)
+                        turn = 'black'
                     else:
                         allowed_moves = []
                         white_locations[index] = selected_coords
                         selected_piece = [-1, '']
-                        #turn = 'black'
+                        turn = 'black'
+            
+            if (turn == "black"):
+                if (selected_coords in black_locations):
+                    allowed_moves = []
+                    index = black_locations.index(selected_coords)
+                    selected_piece = [index, black_pieces[index]]
+                    if alter == selected_piece:
+                        alter = [-1, -1]
+                        selected_piece = [-1, '']
+
+                    alter = selected_piece
+
+                if selected_coords in allowed_moves:
+                    if selected_coords in white_locations:
+                        allowed_moves = []
+                        black_locations[index] = selected_coords
+                        selected_piece = [-1, '']
+                        index = white_locations.index(selected_coords)
+                        lost_pices_white.append(white_pieces[index])
+                        white_locations.pop(index)
+                        white_pieces.pop(index)
+                        turn = 'white'
+                    else:
+                        allowed_moves = []
+                        black_locations[index] = selected_coords
+                        selected_piece = [-1, '']
+                        turn = 'white'
                 
                 
 
