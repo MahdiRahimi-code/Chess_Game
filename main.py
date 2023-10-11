@@ -391,6 +391,42 @@ def check_castle_moves(selected_piece):
                 break
             allowed_moves.append((x, y2))
             y2 += 1
+    
+    if turn == "black":
+        x = black_locations[selected_piece[0]][0]
+        y = black_locations[selected_piece[0]][1]
+
+        x1 = x - 1
+        while (x1, y) not in black_locations and x1>=0:
+            if (x1, y) in white_locations:
+                allowed_moves.append((x1, y))
+                break
+            allowed_moves.append((x1, y))
+            x1 -= 1
+        
+        x2 = x + 1
+        while (x2, y) not in black_locations and x2<=7:
+            if (x2, y) in white_locations:
+                allowed_moves.append((x2, y))
+                break
+            allowed_moves.append((x2, y))
+            x2 += 1
+        
+        y1 = y - 1
+        while (x, y1) not in black_locations and y1>=0:
+            if (x, y1) in white_locations:
+                allowed_moves.append((x, y1))
+                break
+            allowed_moves.append((x, y1))
+            y1 -= 1
+        
+        y2 = y + 1
+        while (x, y2) not in black_locations and y2<=7:
+            if (x, y2) in white_locations:
+                allowed_moves.append((x, y2))
+                break
+            allowed_moves.append((x, y2))
+            y2 += 1
 
 
 
