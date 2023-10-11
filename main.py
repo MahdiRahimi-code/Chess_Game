@@ -149,6 +149,8 @@ def check_moves(selected_piece):
         check_castle_moves(selected_piece)
     elif selected_piece[1] == 'queen':
         check_queen_moves(selected_piece)
+    elif selected_piece[1] == 'king':
+        check_king_moves(selected_piece)
 
     
         
@@ -177,6 +179,22 @@ def check_soldier_moves(selected_piece):
                 if (location[0]-1, location[1]-1) in enemies:
                     allowed_moves.append((location[0]-1, location[1]-1))
 
+
+
+def check_king_moves(selected_piece):
+
+    x = white_locations[selected_piece[0]][0]
+    y = white_locations[selected_piece[0]][1]
+
+    if turn == "white":
+        moves = [(1, -1), (1, 0), (1, 1), (0, -1),
+        (0, 1), (-1, -1), (-1, 0), (-1, 1)]
+
+        for i in range(len(moves)):
+            if (x+moves[i][0], y+moves[i][1]) not in white_locations:
+                if (x+moves[i][0])>=0 and (x+moves[i][0])<=7 and (y+moves[i][1])<=7 \
+                    and (y+moves[i][1])>=0:
+                    allowed_moves.append((x+moves[i][0], y+moves[i][1]))
 
 
     
@@ -305,28 +323,44 @@ color1 = 'red'  # First color
 color2 = 'blue'  # Second color
 current_color = color1
 flash_interval = 500  # Flash interval in milliseconds
-last_flash_time54 = 0
+last_flash_time = 0
 def draw_check():
     global last_flash_time, flash_interval ,current_color , color1 , color2
     
-    for i in range(len(white_locations)):
-        if white_pieces[i] == "king":
-            king_location = white_locations[i]
-            break
-    if check == True:
-        rect = py.Rect(205+ 70*king_location[0], 75+ 70*king_location[1], 60, 60)
-        current_time = py.time.get_ticks()
-        if current_time - last_flash_time54 >= flash_interval:
-            
-            if current_color == color1:
-                current_color = color2
-            else:
-                current_color = color1
+    if turn == "white":
+        for i in range(len(white_locations)):
+            if white_pieces[i] == "king":
+                white_king_location = white_locations[i]
+                break
+        if check == True:
+            current_time = py.time.get_ticks()
+            if current_time - last_flash_time >= flash_interval:
                 
-            last_flash_time = current_time
+                if current_color == color1:
+                    current_color = color2
+                else:
+                    current_color = color1
+                    
+                last_flash_time = current_time
 
-        if turn == "white":
-            py.draw.rect(screen, current_color, rect)
+            py.draw.rect(screen, current_color, (200+ 70*white_king_location[0], 68+ 70*white_king_location[1], 70, 70), 4)
+    else:
+        for i in range(len(black_locations)):
+            if black_pieces[i] == "king":
+                black_king_location = black_locations[i]
+                break
+        if check == True:
+            current_time = py.time.get_ticks()
+            if current_time - last_flash_time >= flash_interval:
+                
+                if current_color == color1:
+                    current_color = color2
+                else:
+                    current_color = color1
+                    
+                last_flash_time = current_time
+
+            py.draw.rect(screen, current_color, (200+ 70*black_king_location[0], 68+ 70*black_king_location[1], 70, 70), 4)
 
 
 
