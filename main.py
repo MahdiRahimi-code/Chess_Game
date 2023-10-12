@@ -524,6 +524,21 @@ def draw_lost_pieces():
         
 
 
+def draw_total_moves():
+    if turn == 'white':
+        for i in range(len(white_total_moves)):
+            if white_total_moves[i] in black_locations:
+                py.draw.rect(screen, 'red', (205+ 70*white_total_moves[i][0], 75+ 70*white_total_moves[i][1], 60, 60), 2)
+            else:
+                py.draw.rect(screen, (22, 250, 250), (205+ 70*white_total_moves[i][0], 75+ 70*white_total_moves[i][1], 60, 60), 2)
+    else:
+        for i in range(len(white_total_moves)):
+            if white_total_moves[i] in white_locations:
+                py.draw.rect(screen, 'red', (205+ 70*white_total_moves[i][0], 75+ 70*white_total_moves[i][1], 60, 60), 2)
+            else:
+                py.draw.rect(screen, (22, 250, 250), (205+ 70*white_total_moves[i][0], 75+ 70*white_total_moves[i][1], 60, 60), 2)
+
+
 
 def check_total_moves():
     for i in range(len(white_pieces)):
@@ -554,6 +569,101 @@ def check_total_moves():
                         white_total_moves.append((location[0]+1, location[1]-1))
                     if (location[0]-1, location[1]-1) in enemies and (location[0]-1, location[1]-1) not in white_total_moves:
                         white_total_moves.append((location[0]-1, location[1]-1))
+        elif selected[1] == 'castle':
+            x = white_locations[selected[0]][0]
+            y = white_locations[selected[0]][1]
+
+            x1 = x - 1
+            while (x1, y) not in white_locations and x1>=0 and (x1, y) not in white_total_moves:
+                if (x1, y) in black_locations:
+                    white_total_moves.append((x1, y))
+                    break
+                white_total_moves.append((x1, y))
+                x1 -= 1
+            
+            x2 = x + 1
+            while (x2, y) not in white_locations and x2<=7 and (x2, y) not in white_total_moves:
+                if (x2, y) in black_locations:
+                    white_total_moves.append((x2, y))
+                    break
+                white_total_moves.append((x2, y))
+                x2 += 1
+            
+            y1 = y - 1
+            while (x, y1) not in white_locations and y1>=0 and (x, y1) not in white_total_moves:
+                if (x, y1) in black_locations:
+                    white_total_moves.append((x, y1))
+                    break
+                white_total_moves.append((x, y1))
+                y1 -= 1
+            
+            y2 = y + 1
+            while (x, y2) not in white_locations and y2<=7 and (x, y2) not in white_total_moves:
+                if (x, y2) in black_locations:
+                    white_total_moves.append((x, y2))
+                    break
+                white_total_moves.append((x, y2))
+                y2 += 1
+        elif selected[1] == 'horse':
+            moves = [(2, -1), (-2, -1), (1, -2), (-1, -2),
+                (2, 1), (-2, 1), (1, 2), (-1, 2)]
+        
+            location = white_locations[selected[0]]
+
+            for i in range(len(moves)):
+                x = location[0] + moves[i][0]
+                y = location[1] + moves[i][1]
+                if (x,y) not in white_locations and (x>=0 and y<=7 and x<=7 and y>=0) and (x,y) not in white_total_moves:
+                    white_total_moves.append((x, y))
+        elif selected[1] == 'elephant':
+            enemies = black_locations
+            friends = white_locations
+            
+            x = white_locations[selected[0]][0]
+            y = white_locations[selected[0]][1]
+
+            x1, y1 = x+1, y-1
+            while (x1, y1) not in friends and x1<=7 and y1>=0:
+                if (x1, y1) in enemies:
+                    white_total_moves.append((x1, y1))
+                    break
+                if (x1, y1) not in white_total_moves:
+                    white_total_moves.append((x1, y1))
+                x1 = x1 + 1
+                y1 = y1 - 1
+            
+            x2, y2 = x-1, y-1
+            while (x2, y2) not in friends and x2>=0 and y2>=0:
+                if (x2, y2) in enemies:
+                    white_total_moves.append((x2, y2))
+                    break
+                if (x2, y2) not in white_total_moves:
+                    white_total_moves.append((x2, y2))
+                x2 = x2 - 1
+                y2 = y2 - 1
+            
+            x3, y3 = x-1, y+1
+            while (x3, y3) not in friends and x3>=0 and y3<=7:
+                if (x3, y3) in enemies:
+                    white_total_moves.append((x3, y3))
+                    break
+                if (x3, y3) not in white_total_moves:
+                    white_total_moves.append((x3, y3))
+                x3 = x3 - 1
+                y3 = y3 + 1
+            
+            x4, y4 = x+1, y+1
+            while (x4, y4) not in friends and x4<=7 and y4<=7:
+                if (x4, y4) in enemies:
+                    white_total_moves.append((x4, y4))
+                    break
+                if (x4, y4) not in white_total_moves:
+                    white_total_moves.append((x4, y4))
+                x4 = x4 + 1
+                y4 = y4 + 1
+        
+
+
 
 
 
@@ -648,6 +758,7 @@ while running:
     draw_check()
     draw_lost_pieces()
     check_total_moves()
+    draw_total_moves()
 
     if turn == "white":
         py.draw.rect(screen, 'gold', (200, 640, 560, 70))
@@ -682,6 +793,7 @@ while running:
                 if selected_coords in allowed_moves:
                     if selected_coords in black_locations:
                         allowed_moves = []
+                        white_total_moves = []
                         white_locations[index] = selected_coords
                         selected_piece = [-1, '']
                         index = black_locations.index(selected_coords)
@@ -691,6 +803,7 @@ while running:
                         turn = 'black'
                     else:
                         allowed_moves = []
+                        white_total_moves = []
                         white_locations[index] = selected_coords
                         selected_piece = [-1, '']
                         turn = 'black'
@@ -749,3 +862,4 @@ while running:
 
 py.quit()
 print(white_total_moves)
+print(len(white_total_moves))
