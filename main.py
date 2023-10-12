@@ -9,6 +9,8 @@ text = py.font.Font(None, 30)
 allowed_moves = []
 lost_pieces_white = []
 lost_pieces_black = []
+white_total_moves = []
+black_total_moves = []
 
 
 
@@ -137,29 +139,28 @@ def draw_pieces():
 
 
 
-
-def check_moves(selected_piece):
-    if selected_piece[1] == 'soldier':
-        check_soldier_moves(selected_piece)
-    elif selected_piece[1] == 'horse':
-        check_horse_moves(selected_piece)
-    elif selected_piece[1] == 'elephant':
-        check_elephant_moves(selected_piece)
-    elif selected_piece[1] == 'castle':
-        check_castle_moves(selected_piece)
-    elif selected_piece[1] == 'queen':
-        check_queen_moves(selected_piece)
-    elif selected_piece[1] == 'king':
-        check_king_moves(selected_piece)
+def check_moves(selected):
+    if selected[1] == 'soldier':
+        check_soldier_moves(selected)
+    elif selected[1] == 'horse':
+        check_horse_moves(selected)
+    elif selected[1] == 'elephant':
+        check_elephant_moves(selected)
+    elif selected[1] == 'castle':
+        check_castle_moves(selected)
+    elif selected[1] == 'queen':
+        check_queen_moves(selected)
+    elif selected[1] == 'king':
+        check_king_moves(selected)
 
 
 
         
-def check_soldier_moves(selected_piece):
+def check_soldier_moves(selected):
     if turn == 'white':
         enemies = black_locations
         friends = white_locations
-        location = white_locations[selected_piece[0]]
+        location = white_locations[selected[0]]
 
         if location[1] == 6:
             if (location[0], location[1]-1) not in enemies and (location[0], location[1]-1) not in friends:
@@ -183,7 +184,7 @@ def check_soldier_moves(selected_piece):
     elif turn == 'black':
         enemies = white_locations
         friends = black_locations
-        location = black_locations[selected_piece[0]]
+        location = black_locations[selected[0]]
 
         if location[1] == 1:
             if (location[0], location[1]+1) not in enemies and (location[0], location[1]+1) not in friends:
@@ -206,11 +207,10 @@ def check_soldier_moves(selected_piece):
 
 
 
-
-def check_king_moves(selected_piece):
+def check_king_moves(selected):
     if turn == "white":
-        x = white_locations[selected_piece[0]][0]
-        y = white_locations[selected_piece[0]][1]
+        x = white_locations[selected[0]][0]
+        y = white_locations[selected[0]][1]
         moves = [(1, -1), (1, 0), (1, 1), (0, -1),
         (0, 1), (-1, -1), (-1, 0), (-1, 1)]
 
@@ -220,8 +220,8 @@ def check_king_moves(selected_piece):
                     and (y+moves[i][1])>=0:
                     allowed_moves.append((x+moves[i][0], y+moves[i][1]))
     if turn == "black":
-        x = black_locations[selected_piece[0]][0]
-        y = black_locations[selected_piece[0]][1]
+        x = black_locations[selected[0]][0]
+        y = black_locations[selected[0]][1]
         moves = [(1, -1), (1, 0), (1, 1), (0, -1),
         (0, 1), (-1, -1), (-1, 0), (-1, 1)]
 
@@ -233,14 +233,12 @@ def check_king_moves(selected_piece):
 
 
 
-
-
-def check_horse_moves(selected_piece):
+def check_horse_moves(selected):
     if turn == "white":
         moves = [(2, -1), (-2, -1), (1, -2), (-1, -2),
                 (2, 1), (-2, 1), (1, 2), (-1, 2)]
         
-        location = white_locations[selected_piece[0]]
+        location = white_locations[selected[0]]
 
         for i in range(len(moves)):
             x = location[0] + moves[i][0]
@@ -252,7 +250,7 @@ def check_horse_moves(selected_piece):
         moves = [(2, -1), (-2, -1), (1, -2), (-1, -2),
                 (2, 1), (-2, 1), (1, 2), (-1, 2)]
         
-        location = black_locations[selected_piece[0]]
+        location = black_locations[selected[0]]
 
         for i in range(len(moves)):
             x = location[0] + moves[i][0]
@@ -262,15 +260,13 @@ def check_horse_moves(selected_piece):
 
 
 
-
-
-def check_elephant_moves(selected_piece):
+def check_elephant_moves(selected):
     if turn == "white":
         enemies = black_locations
         friends = white_locations
         
-        x = white_locations[selected_piece[0]][0]
-        y = white_locations[selected_piece[0]][1]
+        x = white_locations[selected[0]][0]
+        y = white_locations[selected[0]][1]
 
         x1, y1 = x+1, y-1
         while (x1, y1) not in friends and x1<=7 and y1>=0:
@@ -312,8 +308,8 @@ def check_elephant_moves(selected_piece):
         enemies = white_locations
         friends = black_locations
         
-        x = black_locations[selected_piece[0]][0]
-        y = black_locations[selected_piece[0]][1]
+        x = black_locations[selected[0]][0]
+        y = black_locations[selected[0]][1]
 
         x1, y1 = x+1, y-1
         while (x1, y1) not in friends and x1<=7 and y1>=0:
@@ -353,12 +349,10 @@ def check_elephant_moves(selected_piece):
 
 
 
-
-
-def check_castle_moves(selected_piece):
+def check_castle_moves(selected):
     if turn == "white":
-        x = white_locations[selected_piece[0]][0]
-        y = white_locations[selected_piece[0]][1]
+        x = white_locations[selected[0]][0]
+        y = white_locations[selected[0]][1]
 
         x1 = x - 1
         while (x1, y) not in white_locations and x1>=0:
@@ -393,8 +387,8 @@ def check_castle_moves(selected_piece):
             y2 += 1
     
     if turn == "black":
-        x = black_locations[selected_piece[0]][0]
-        y = black_locations[selected_piece[0]][1]
+        x = black_locations[selected[0]][0]
+        y = black_locations[selected[0]][1]
 
         x1 = x - 1
         while (x1, y) not in black_locations and x1>=0:
@@ -430,9 +424,9 @@ def check_castle_moves(selected_piece):
 
 
 
-def check_queen_moves(selected_piece):
-    check_castle_moves(selected_piece)
-    check_elephant_moves(selected_piece)
+def check_queen_moves(selected):
+    check_castle_moves(selected)
+    check_elephant_moves(selected)
 
 
 
@@ -531,6 +525,39 @@ def draw_lost_pieces():
 
 
 
+def check_total_moves():
+    for i in range(len(white_pieces)):
+        selected = [i, white_pieces[i]]
+        if selected[1] == 'soldier':
+            enemies = black_locations
+            friends = white_locations
+            location = white_locations[selected[0]]
+
+            if location[1] == 6:
+                if (location[0], location[1]-1) not in enemies and (location[0], location[1]-1) not in friends\
+                and (location[0], location[1]-1) not in white_total_moves:
+                    white_total_moves.append((location[0], location[1]-1))
+                if (location[0], location[1]-2) not in enemies and (location[0], location[1]-2) not in friends\
+                and (location[0], location[1]-2) not in white_total_moves:
+                    white_total_moves.append((location[0], location[1]-2))
+                if (location[0]+1, location[1]-1) in enemies and (location[0]+1, location[1]-1) not in white_total_moves:
+                    white_total_moves.append((location[0]+1, location[1]-1))
+                if (location[0]-1, location[1]-1) in enemies and (location[0]-1, location[1]-1) not in white_total_moves:
+                    white_total_moves.append((location[0]-1, location[1]-1))
+                    
+            else:
+                if (location[1] - 1 >= 0):
+                    if (location[0], location[1]-1) not in enemies and (location[0], location[1]-1) not in friends\
+                    and (location[0], location[1]-1) not in white_total_moves:
+                        white_total_moves.append((location[0], location[1]-1))
+                    if (location[0]+1, location[1]-1) in enemies and (location[0]+1, location[1]-1) not in white_total_moves:
+                        white_total_moves.append((location[0]+1, location[1]-1))
+                    if (location[0]-1, location[1]-1) in enemies and (location[0]-1, location[1]-1) not in white_total_moves:
+                        white_total_moves.append((location[0]-1, location[1]-1))
+
+
+
+
 color1 = 'red'  # First color
 color2 = 'blue'  # Second color
 current_color = color1
@@ -577,6 +604,31 @@ def draw_check():
 
 
 
+def check_king_check():
+    global check
+    if turn == "white":
+        white_index = -1
+        for i in range(len(white_pieces)):
+            if white_pices[i] == "king":
+                white_index=i
+                break
+        white_king_location = white_locations[white_index]
+
+        if (white_king_location) in black_total_moves:
+            check = True
+        
+    else :
+        black_index = -1
+        
+        for i in range(len(black_pieces)):
+            if black_pices[i] == "king":
+                black_index=i
+                break
+        black_king_location = black_locations[black_index]
+
+        if (black_king_location) in white_total_moves:
+            check = True
+
 
 # white or black
 turn = 'white'
@@ -595,7 +647,13 @@ while running:
     draw_pieces()
     draw_check()
     draw_lost_pieces()
+    check_total_moves()
 
+    if turn == "white":
+        py.draw.rect(screen, 'gold', (200, 640, 560, 70))
+    elif turn == "black":
+        py.draw.rect(screen, 'gold', (200, 0, 560, 60))
+    
 
     if selected_piece[0] != -1:
         check_moves(selected_piece)
@@ -690,3 +748,4 @@ while running:
 
 
 py.quit()
+print(white_total_moves)
