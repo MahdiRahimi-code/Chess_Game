@@ -1,5 +1,4 @@
 import pygame as py
-import tkinter
 
 py.init()
 screen = py.display.set_mode((960, 700))
@@ -750,7 +749,18 @@ def check_total_moves():
                     white_total_moves.append((x4, y4))
                 x4 = x4 + 1
                 y4 = y4 + 1
+        elif selected[1] == 'king':
+            x = white_locations[selected[0]][0]
+            y = white_locations[selected[0]][1]
+            moves = [(1, -1), (1, 0), (1, 1), (0, -1),
+            (0, 1), (-1, -1), (-1, 0), (-1, 1)]
 
+            for i in range(len(moves)):
+                if (x+moves[i][0], y+moves[i][1]) not in white_locations:
+                    if (x+moves[i][0])>=0 and (x+moves[i][0])<=7 and (y+moves[i][1])<=7 \
+                        and (y+moves[i][1])>=0:
+                        if (x+moves[i][0], y+moves[i][1]) not in white_total_moves:
+                            white_total_moves.append((x+moves[i][0], y+moves[i][1])) 
 
 
 
@@ -762,68 +772,73 @@ last_flash_time = 0
 def draw_check():
     global last_flash_time, flash_interval ,current_color , color1 , color2
     
-    if turn == "white":
-        for i in range(len(white_locations)):
-            if white_pieces[i] == "king":
-                white_king_location = white_locations[i]
-                break
-        if check == True:
-            current_time = py.time.get_ticks()
-            if current_time - last_flash_time >= flash_interval:
-                
-                if current_color == color1:
-                    current_color = color2
-                else:
-                    current_color = color1
-                    
-                last_flash_time = current_time
-
-            py.draw.rect(screen, current_color, (200+ 70*white_king_location[0], 68+ 70*white_king_location[1], 70, 70), 4)
+    white_king_location = ()
+    for i in range(len(white_locations)):
+        if white_pieces[i] == "king":
+            white_king_location = white_locations[i]
+            break
     
-    else:
-        for i in range(len(black_locations)):
-            if black_pieces[i] == "king":
-                black_king_location = black_locations[i]
-                break
-        if check == True:
-            current_time = py.time.get_ticks()
-            if current_time - last_flash_time >= flash_interval:
+    if white_check == True:
+        current_time = py.time.get_ticks()
+        if current_time - last_flash_time >= flash_interval:
                 
-                if current_color == color1:
-                    current_color = color2
-                else:
-                    current_color = color1
+            if current_color == color1:
+                current_color = color2
+            else:
+                current_color = color1
                     
-                last_flash_time = current_time
+            last_flash_time = current_time
 
-            py.draw.rect(screen, current_color, (200+ 70*black_king_location[0], 68+ 70*black_king_location[1], 70, 70), 4)
+        py.draw.rect(screen, current_color, (200+ 70*white_king_location[0], 68+ 70*white_king_location[1], 70, 70), 4)
+    
+
+
+
+    for i in range(len(black_locations)):
+        if black_pieces[i] == "king":
+            black_king_location = black_locations[i]
+            break
+
+    if black_check == True:
+        current_time = py.time.get_ticks()
+        if current_time - last_flash_time >= flash_interval:
+                
+            if current_color == color1:
+                current_color = color2
+            else:
+                current_color = color1
+                    
+            last_flash_time = current_time
+
+        py.draw.rect(screen, current_color, (200+ 70*black_king_location[0], 68+ 70*black_king_location[1], 70, 70), 4)
+        
+        
 
 
 
 def check_king_check():
-    global check
-    if turn == "white":
-        white_index = -1
-        for i in range(len(white_pieces)):
-            if white_pices[i] == "king":
+    global white_check, black_check
+
+    """white_index = -1
+    for i in range(len(white_pieces)):
+            if white_pieces[i] == "king":
                 white_index=i
                 break
-        white_king_location = white_locations[white_index]
+    white_king_location = white_locations[white_index]        
+    if (white_king_location) in black_total_moves:
+        check = True"""
 
-        if (white_king_location) in black_total_moves:
-            check = True
-        
-    else :
-        black_index = -1
-        
-        for i in range(len(black_pieces)):
-            if black_pices[i] == "king":
-                black_index=i
-                break
-        black_king_location = black_locations[black_index]
 
-        if (black_king_location) in white_total_moves:
-            check = True
+    black_index = -1    
+    for i in range(len(black_pieces)):
+        if black_pieces[i] == "king":
+            black_index=i
+            break
+    black_king_location = black_locations[black_index]
+    if (black_king_location) in white_total_moves:
+        black_check = True
+    else:
+        black_check = False
 
 
 # white or black
@@ -833,7 +848,8 @@ selected_piece = [-1, '']
 # variable for disselecting piece
 alter = [-1 , -1]
 running = True
-check = False
+white_check = False
+black_check = False
 
 while running:
     timer.tick(60)
@@ -845,6 +861,8 @@ while running:
     draw_lost_pieces()
     check_total_moves()
     draw_total_moves()
+    check_king_check()
+    
 
     if turn == "white":
         py.draw.rect(screen, 'gold', (200, 640, 560, 70))
@@ -880,6 +898,7 @@ while running:
                     if selected_coords in black_locations:
                         allowed_moves = []
                         white_total_moves = []
+                        black_total_moves = []
                         white_locations[index] = selected_coords
                         selected_piece = [-1, '']
                         index = black_locations.index(selected_coords)
@@ -890,6 +909,7 @@ while running:
                     else:
                         allowed_moves = []
                         white_total_moves = []
+                        black_total_moves = []
                         white_locations[index] = selected_coords
                         selected_piece = [-1, '']
                         turn = 'black'
@@ -908,6 +928,8 @@ while running:
                 if selected_coords in allowed_moves:
                     if selected_coords in white_locations:
                         allowed_moves = []
+                        white_total_moves = []
+                        black_total_moves = []
                         black_locations[index] = selected_coords
                         selected_piece = [-1, '']
                         index = white_locations.index(selected_coords)
@@ -917,6 +939,8 @@ while running:
                         turn = 'white'
                     else:
                         allowed_moves = []
+                        white_total_moves = []
+                        black_total_moves = []
                         black_locations[index] = selected_coords
                         selected_piece = [-1, '']
                         turn = 'white'
