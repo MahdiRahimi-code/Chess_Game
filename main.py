@@ -151,10 +151,17 @@ def check_moves(selected):
         check_queen_moves(selected)
     elif selected[1] == 'king':
         check_king_moves(selected)
+    
+    # king can not be ommited
+    print(allowed_moves)
+    """for i in range(len(allowed_moves)):
+        if allowed_moves[i] == black_king_location:
+            allowed_moves.pop(i)
+        elif allowed_moves[i] == white_king_location:
+            allowed_moves.pop(i)"""
 
 
-
-        
+    
 def check_soldier_moves(selected):
     if turn == 'white':
         enemies = black_locations
@@ -162,22 +169,25 @@ def check_soldier_moves(selected):
         location = white_locations[selected[0]]
 
         if location[1] == 6:
-            if (location[0], location[1]-1) not in enemies and (location[0], location[1]-1) not in friends:
+            if (location[0], location[1]-1) not in enemies and (location[0], location[1]-1) not in friends \
+                and (location[0], location[1]-1) not in allowed_moves:
                 allowed_moves.append((location[0], location[1]-1))
-            if (location[0], location[1]-2) not in enemies and (location[0], location[1]-2) not in friends:
+            if (location[0], location[1]-2) not in enemies and (location[0], location[1]-2) not in friends \
+                and (location[0], location[1]-2) not in allowed_moves:
                 allowed_moves.append((location[0], location[1]-2))
-            if (location[0]+1, location[1]-1) in enemies:
+            if (location[0]+1, location[1]-1) in enemies and (location[0]+1, location[1]-1) not in allowed_moves:
                 allowed_moves.append((location[0]+1, location[1]-1))
-            if (location[0]-1, location[1]-1) in enemies:
+            if (location[0]-1, location[1]-1) in enemies and (location[0]-1, location[1]-1) not in allowed_moves:
                 allowed_moves.append((location[0]-1, location[1]-1))
                 
         else:
             if (location[1] - 1 >= 0):
-                if (location[0], location[1]-1) not in enemies and (location[0], location[1]-1) not in friends:
+                if (location[0], location[1]-1) not in enemies and (location[0], location[1]-1) not in friends \
+                    and (location[0], location[1]-1) not in allowed_moves:
                     allowed_moves.append((location[0], location[1]-1))
-                if (location[0]+1, location[1]-1) in enemies:
+                if (location[0]+1, location[1]-1) in enemies and (location[0]+1, location[1]-1) not in allowed_moves:
                     allowed_moves.append((location[0]+1, location[1]-1))
-                if (location[0]-1, location[1]-1) in enemies:
+                if (location[0]-1, location[1]-1) in enemies and (location[0]-1, location[1]-1) not in allowed_moves:
                     allowed_moves.append((location[0]-1, location[1]-1))
     
     elif turn == 'black':
@@ -186,22 +196,25 @@ def check_soldier_moves(selected):
         location = black_locations[selected[0]]
 
         if location[1] == 1:
-            if (location[0], location[1]+1) not in enemies and (location[0], location[1]+1) not in friends:
+            if (location[0], location[1]+1) not in enemies and (location[0], location[1]+1) not in friends \
+                and (location[0], location[1]+1) not in allowed_moves:
                 allowed_moves.append((location[0], location[1]+1))
-            if (location[0], location[1]+2) not in enemies and (location[0], location[1]+2) not in friends:
+            if (location[0], location[1]+2) not in enemies and (location[0], location[1]+2) not in friends \
+                and (location[0], location[1]+2) not in allowed_moves:
                 allowed_moves.append((location[0], location[1]+2))
-            if (location[0]-1, location[1]+1) in enemies:
+            if (location[0]-1, location[1]+1) in enemies and (location[0]-1, location[1]+1) not in allowed_moves:
                 allowed_moves.append((location[0]-1, location[1]+1))
-            if (location[0]+1, location[1]+1) in enemies:
+            if (location[0]+1, location[1]+1) in enemies and (location[0]+1, location[1]+1) not in allowed_moves:
                 allowed_moves.append((location[0]+1, location[1]+1))
                 
         else:
             if (location[1] + 1 <= 7):
-                if (location[0], location[1]+1) not in enemies and (location[0], location[1]+1) not in friends:
+                if (location[0], location[1]+1) not in enemies and (location[0], location[1]+1) not in friends \
+                    and (location[0], location[1]+1) not in allowed_moves:
                     allowed_moves.append((location[0], location[1]+1))
-                if (location[0]-1, location[1]+1) in enemies:
+                if (location[0]-1, location[1]+1) in enemies and (location[0]-1, location[1]+1) not in allowed_moves:
                     allowed_moves.append((location[0]-1, location[1]+1))
-                if (location[0]+1, location[1]+1) in enemies:
+                if (location[0]+1, location[1]+1) in enemies and (location[0]+1, location[1]+1) not in allowed_moves:
                     allowed_moves.append((location[0]+1, location[1]+1))
 
 
@@ -217,7 +230,8 @@ def check_king_moves(selected):
             if (x+moves[i][0], y+moves[i][1]) not in white_locations:
                 if (x+moves[i][0])>=0 and (x+moves[i][0])<=7 and (y+moves[i][1])<=7 \
                     and (y+moves[i][1])>=0:
-                    allowed_moves.append((x+moves[i][0], y+moves[i][1]))
+                    if (x+moves[i][0], y+moves[i][1]) not in allowed_moves:
+                        allowed_moves.append((x+moves[i][0], y+moves[i][1]))
     if turn == "black":
         x = black_locations[selected[0]][0]
         y = black_locations[selected[0]][1]
@@ -228,7 +242,8 @@ def check_king_moves(selected):
             if (x+moves[i][0], y+moves[i][1]) not in black_locations:
                 if (x+moves[i][0])>=0 and (x+moves[i][0])<=7 and (y+moves[i][1])<=7 \
                     and (y+moves[i][1])>=0:
-                    allowed_moves.append((x+moves[i][0], y+moves[i][1]))
+                    if (x+moves[i][0], y+moves[i][1]) not in allowed_moves:
+                        allowed_moves.append((x+moves[i][0], y+moves[i][1]))
 
 
 
@@ -242,7 +257,7 @@ def check_horse_moves(selected):
         for i in range(len(moves)):
             x = location[0] + moves[i][0]
             y = location[1] + moves[i][1]
-            if (x,y) not in white_locations and (x>=0 and y<=7 and x<=7 and y>=0):
+            if (x,y) not in white_locations and (x>=0 and y<=7 and x<=7 and y>=0) and (x, y) not in allowed_moves:
                 allowed_moves.append((x, y))
 
     if turn == "black":
@@ -254,7 +269,7 @@ def check_horse_moves(selected):
         for i in range(len(moves)):
             x = location[0] + moves[i][0]
             y = location[1] + moves[i][1]
-            if (x,y) not in black_locations and (x>=0 and y<=7 and x<=7 and y>=0):
+            if (x,y) not in black_locations and (x>=0 and y<=7 and x<=7 and y>=0) and (x, y) not in allowed_moves:
                 allowed_moves.append((x, y))
 
 
@@ -268,7 +283,7 @@ def check_elephant_moves(selected):
         y = white_locations[selected[0]][1]
 
         x1, y1 = x+1, y-1
-        while (x1, y1) not in friends and x1<=7 and y1>=0:
+        while (x1, y1) not in friends and x1<=7 and y1>=0 and (x1, y1) not in allowed_moves:
             if (x1, y1) in enemies:
                 allowed_moves.append((x1, y1))
                 break
@@ -277,7 +292,7 @@ def check_elephant_moves(selected):
             y1 = y1 - 1
         
         x2, y2 = x-1, y-1
-        while (x2, y2) not in friends and x2>=0 and y2>=0:
+        while (x2, y2) not in friends and x2>=0 and y2>=0 and (x2, y2) not in allowed_moves:
             if (x2, y2) in enemies:
                 allowed_moves.append((x2, y2))
                 break
@@ -286,7 +301,7 @@ def check_elephant_moves(selected):
             y2 = y2 - 1
         
         x3, y3 = x-1, y+1
-        while (x3, y3) not in friends and x3>=0 and y3<=7:
+        while (x3, y3) not in friends and x3>=0 and y3<=7 and (x3, y3) not in allowed_moves:
             if (x3, y3) in enemies:
                 allowed_moves.append((x3, y3))
                 break
@@ -295,7 +310,7 @@ def check_elephant_moves(selected):
             y3 = y3 + 1
         
         x4, y4 = x+1, y+1
-        while (x4, y4) not in friends and x4<=7 and y4<=7:
+        while (x4, y4) not in friends and x4<=7 and y4<=7 and (x4, y4) not in allowed_moves:
             if (x4, y4) in enemies:
                 allowed_moves.append((x4, y4))
                 break
@@ -311,7 +326,7 @@ def check_elephant_moves(selected):
         y = black_locations[selected[0]][1]
 
         x1, y1 = x+1, y-1
-        while (x1, y1) not in friends and x1<=7 and y1>=0:
+        while (x1, y1) not in friends and x1<=7 and y1>=0 and (x1, y1) not in allowed_moves:
             if (x1, y1) in enemies:
                 allowed_moves.append((x1, y1))
                 break
@@ -320,7 +335,7 @@ def check_elephant_moves(selected):
             y1 = y1 - 1
         
         x2, y2 = x-1, y-1
-        while (x2, y2) not in friends and x2>=0 and y2>=0:
+        while (x2, y2) not in friends and x2>=0 and y2>=0 and (x2, y2) not in allowed_moves:
             if (x2, y2) in enemies:
                 allowed_moves.append((x2, y2))
                 break
@@ -329,7 +344,7 @@ def check_elephant_moves(selected):
             y2 = y2 - 1
         
         x3, y3 = x-1, y+1
-        while (x3, y3) not in friends and x3>=0 and y3<=7:
+        while (x3, y3) not in friends and x3>=0 and y3<=7 and (x3, y3) not in allowed_moves:
             if (x3, y3) in enemies:
                 allowed_moves.append((x3, y3))
                 break
@@ -338,7 +353,7 @@ def check_elephant_moves(selected):
             y3 = y3 + 1
         
         x4, y4 = x+1, y+1
-        while (x4, y4) not in friends and x4<=7 and y4<=7:
+        while (x4, y4) not in friends and x4<=7 and y4<=7 and (x4, y4) not in allowed_moves:
             if (x4, y4) in enemies:
                 allowed_moves.append((x4, y4))
                 break
@@ -347,7 +362,7 @@ def check_elephant_moves(selected):
             y4 = y4 + 1
 
 
-
+#####################################################
 def check_castle_moves(selected):
     if turn == "white":
         x = white_locations[selected[0]][0]
@@ -520,26 +535,10 @@ def draw_lost_pieces():
                 screen.blit(black_queen, (860, 75 + 60*(i-10)))
             else:
                 screen.blit(black_queen, (785, 75 + 60*i))
-        
 
 
-def draw_total_moves():
-    if turn == 'white':
-        for i in range(len(white_total_moves)):
-            if white_total_moves[i] in black_locations:
-                py.draw.rect(screen, 'red', (205+ 70*white_total_moves[i][0], 75+ 70*white_total_moves[i][1], 60, 60), 2)
-            else:
-                py.draw.rect(screen, (22, 250, 250), (205+ 70*white_total_moves[i][0], 75+ 70*white_total_moves[i][1], 60, 60), 2)
-    else:
-        for i in range(len(white_total_moves)):
-            if white_total_moves[i] in white_locations:
-                py.draw.rect(screen, 'red', (205+ 70*white_total_moves[i][0], 75+ 70*white_total_moves[i][1], 60, 60), 2)
-            else:
-                py.draw.rect(screen, (22, 250, 250), (205+ 70*white_total_moves[i][0], 75+ 70*white_total_moves[i][1], 60, 60), 2)
 
-
-    
-def check_total_moves():
+def check_white_total():
     for i in range(len(white_pieces)):
         selected = [i, white_pieces[i]]
         if selected[1] == 'soldier':
@@ -760,7 +759,237 @@ def check_total_moves():
                     if (x+moves[i][0])>=0 and (x+moves[i][0])<=7 and (y+moves[i][1])<=7 \
                         and (y+moves[i][1])>=0:
                         if (x+moves[i][0], y+moves[i][1]) not in white_total_moves:
-                            white_total_moves.append((x+moves[i][0], y+moves[i][1])) 
+                            white_total_moves.append((x+moves[i][0], y+moves[i][1]))
+
+
+def check_black_total():
+    for i in range(len(black_pieces)):
+        selected = [i, black_pieces[i]]
+        if selected[1] == 'soldier':
+            enemies = white_locations
+            friends = black_locations
+            location = black_locations[selected[0]]
+
+            if location[1] == 6:
+                if (location[0], location[1]-1) not in enemies and (location[0], location[1]-1) not in friends\
+                and (location[0], location[1]-1) not in black_total_moves:
+                    black_total_moves.append((location[0], location[1]-1))
+                if (location[0], location[1]-2) not in enemies and (location[0], location[1]-2) not in friends\
+                and (location[0], location[1]-2) not in black_total_moves:
+                    black_total_moves.append((location[0], location[1]-2))
+                if (location[0]+1, location[1]-1) in enemies and (location[0]+1, location[1]-1) not in black_total_moves:
+                    black_total_moves.append((location[0]+1, location[1]-1))
+                if (location[0]-1, location[1]-1) in enemies and (location[0]-1, location[1]-1) not in black_total_moves:
+                    black_total_moves.append((location[0]-1, location[1]-1))
+                    
+            else:
+                if (location[1] - 1 >= 0):
+                    if (location[0], location[1]-1) not in enemies and (location[0], location[1]-1) not in friends\
+                    and (location[0], location[1]-1) not in black_total_moves:
+                        black_total_moves.append((location[0], location[1]-1))
+                    if (location[0]+1, location[1]-1) in enemies and (location[0]+1, location[1]-1) not in black_total_moves:
+                        black_total_moves.append((location[0]+1, location[1]-1))
+                    if (location[0]-1, location[1]-1) in enemies and (location[0]-1, location[1]-1) not in black_total_moves:
+                        black_total_moves.append((location[0]-1, location[1]-1))
+        elif selected[1] == 'castle':
+            x = black_locations[selected[0]][0]
+            y = black_locations[selected[0]][1]
+
+            x1 = x - 1
+            found = False
+            while (x1, y) not in black_locations and x1>=0 and not found:
+                if (x1, y) in white_locations:
+                    found = True
+                if (x1, y) not in black_total_moves:
+                    black_total_moves.append((x1, y))
+                x1 -= 1
+            
+            x2 = x + 1
+            found = False
+            while (x2, y) not in black_locations and x2<=7 and not found:
+                if (x2, y) in white_locations:
+                    found = True
+                if (x2, y) not in black_total_moves:
+                    black_total_moves.append((x2, y))
+                x2 += 1
+            
+            y1 = y - 1
+            found = False
+            while (x, y1) not in black_locations and y1>=0 and not found:                
+                if (x, y1) in white_locations:
+                    found = True
+                if (x, y1) not in black_total_moves:
+                    black_total_moves.append((x, y1))
+                y1 -= 1
+            
+            y2 = y + 1
+            found = False
+            while (x, y2) not in black_locations and y2<=7 and not found:                
+                if (x, y2) in white_locations:
+                    found = True
+                if (x, y2) not in black_total_moves:
+                    black_total_moves.append((x, y2))
+                y2 += 1
+        elif selected[1] == 'horse':
+            moves = [(2, -1), (-2, -1), (1, -2), (-1, -2),
+                (2, 1), (-2, 1), (1, 2), (-1, 2)]
+        
+            location = black_locations[selected[0]]
+
+            for i in range(len(moves)):
+                x = location[0] + moves[i][0]
+                y = location[1] + moves[i][1]
+                if (x,y) not in black_locations and (x>=0 and y<=7 and x<=7 and y>=0) and (x,y) not in black_total_moves:
+                    black_total_moves.append((x, y))
+        elif selected[1] == 'elephant':
+            enemies = white_locations
+            friends = black_locations
+            
+            x = black_locations[selected[0]][0]
+            y = black_locations[selected[0]][1]
+
+            x1, y1 = x+1, y-1
+            found = False
+            while (x1, y1) not in friends and x1<=7 and y1>=0 and not found:                
+                if (x1, y1) in enemies:
+                    found = True
+                if (x1, y1) not in black_total_moves:    
+                    black_total_moves.append((x1, y1))
+                x1 = x1 + 1
+                y1 = y1 - 1
+            
+            x2, y2 = x-1, y-1
+            found = False
+            while (x2, y2) not in friends and x2>=0 and y2>=0 and not found:
+                if (x2, y2) in enemies:
+                    found = True
+                if (x2, y2) not in black_total_moves:    
+                    black_total_moves.append((x2, y2))
+                x2 = x2 - 1
+                y2 = y2 - 1
+            
+            x3, y3 = x-1, y+1
+            found = False
+            while (x3, y3) not in friends and x3>=0 and y3<=7 and not found:                            
+                if (x3, y3) in enemies:
+                    found = True
+                if (x3, y3) not in black_total_moves:    
+                    black_total_moves.append((x3, y3))
+                x3 = x3 - 1
+                y3 = y3 + 1
+            
+            x4, y4 = x+1, y+1
+            found = False
+            while (x4, y4) not in friends and x4<=7 and y4<=7 and not found:                
+                if (x4, y4) in enemies:
+                    found = True
+                if (x4, y4) not in black_total_moves:    
+                    black_total_moves.append((x4, y4))
+                x4 = x4 + 1
+                y4 = y4 + 1
+        elif selected[1] == 'queen':
+            x = black_locations[selected[0]][0]
+            y = black_locations[selected[0]][1]
+
+            x1 = x - 1
+            found = False
+            while (x1, y) not in black_locations and x1>=0 and not found:
+                if (x1, y) in white_locations:
+                    found = True
+                if (x1, y) not in black_total_moves:
+                    black_total_moves.append((x1, y))
+                x1 -= 1
+            
+            x2 = x + 1
+            found = False
+            while (x2, y) not in black_locations and x2<=7 and not found:
+                if (x2, y) in white_locations:
+                    found = True
+                if (x2, y) not in black_total_moves:
+                    black_total_moves.append((x2, y))
+                x2 += 1
+            
+            y1 = y - 1
+            found = False
+            while (x, y1) not in black_locations and y1>=0 and not found:                
+                if (x, y1) in white_locations:
+                    found = True
+                if (x, y1) not in black_total_moves:
+                    black_total_moves.append((x, y1))
+                y1 -= 1
+            
+            y2 = y + 1
+            found = False
+            while (x, y2) not in black_locations and y2<=7 and not found:                
+                if (x, y2) in white_locations:
+                    found = True
+                if (x, y2) not in black_total_moves:
+                    black_total_moves.append((x, y2))
+                y2 += 1                    
+
+            enemies = white_locations
+            friends = black_locations
+            
+            x = black_locations[selected[0]][0]
+            y = black_locations[selected[0]][1]
+
+            x1, y1 = x+1, y-1
+            found = False
+            while (x1, y1) not in friends and x1<=7 and y1>=0 and not found:                
+                if (x1, y1) in enemies:
+                    found = True
+                if (x1, y1) not in black_total_moves:    
+                    black_total_moves.append((x1, y1))
+                x1 = x1 + 1
+                y1 = y1 - 1
+            
+            x2, y2 = x-1, y-1
+            found = False
+            while (x2, y2) not in friends and x2>=0 and y2>=0 and not found:
+                if (x2, y2) in enemies:
+                    found = True
+                if (x2, y2) not in black_total_moves:    
+                    black_total_moves.append((x2, y2))
+                x2 = x2 - 1
+                y2 = y2 - 1
+            
+            x3, y3 = x-1, y+1
+            found = False
+            while (x3, y3) not in friends and x3>=0 and y3<=7 and not found:                            
+                if (x3, y3) in enemies:
+                    found = True
+                if (x3, y3) not in black_total_moves:    
+                    black_total_moves.append((x3, y3))
+                x3 = x3 - 1
+                y3 = y3 + 1
+            
+            x4, y4 = x+1, y+1
+            found = False
+            while (x4, y4) not in friends and x4<=7 and y4<=7 and not found:                
+                if (x4, y4) in enemies:
+                    found = True
+                if (x4, y4) not in black_total_moves:    
+                    black_total_moves.append((x4, y4))
+                x4 = x4 + 1
+                y4 = y4 + 1
+        elif selected[1] == 'king':
+            x = black_locations[selected[0]][0]
+            y = black_locations[selected[0]][1]
+            moves = [(1, -1), (1, 0), (1, 1), (0, -1),
+            (0, 1), (-1, -1), (-1, 0), (-1, 1)]
+
+            for i in range(len(moves)):
+                if (x+moves[i][0], y+moves[i][1]) not in black_locations:
+                    if (x+moves[i][0])>=0 and (x+moves[i][0])<=7 and (y+moves[i][1])<=7 \
+                        and (y+moves[i][1])>=0:
+                        if (x+moves[i][0], y+moves[i][1]) not in black_total_moves:
+                            black_total_moves.append((x+moves[i][0], y+moves[i][1]))
+
+
+
+def check_total_moves():
+    check_white_total()
+    check_black_total()
 
 
 
@@ -813,20 +1042,24 @@ def draw_check():
         py.draw.rect(screen, current_color, (200+ 70*black_king_location[0], 68+ 70*black_king_location[1], 70, 70), 4)
         
         
-
+white_king_location = ()
+black_king_location = ()
 
 
 def check_king_check():
     global white_check, black_check
+    global white_king_location, black_king_location
 
-    """white_index = -1
+    white_index = -1
     for i in range(len(white_pieces)):
             if white_pieces[i] == "king":
                 white_index=i
                 break
     white_king_location = white_locations[white_index]        
     if (white_king_location) in black_total_moves:
-        check = True"""
+        white_check = True
+    else:
+        white_check = False
 
 
     black_index = -1    
@@ -860,8 +1093,8 @@ while running:
     draw_check()
     draw_lost_pieces()
     check_total_moves()
-    draw_total_moves()
     check_king_check()
+
     
 
     if turn == "white":
@@ -971,5 +1204,3 @@ while running:
 
 
 py.quit()
-print(white_total_moves)
-print(len(white_total_moves))
