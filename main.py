@@ -1154,7 +1154,7 @@ while running:
                         index2 = black_locations.index(selected_coords)
                         lost = black_locations.pop(index2)
                         lost_piece = black_pieces.pop(index2)                        
-                        lost_pieces_black.append(black_pieces[index2])
+                        lost_pieces_black.append(lost_piece)
 
                         selected_piece = [-1, '']
                         check_total_moves()
