@@ -153,12 +153,12 @@ def check_moves(selected):
         check_king_moves(selected)
     
     # king can not be ommited
-    print(allowed_moves)
-    """for i in range(len(allowed_moves)):
-        if allowed_moves[i] == black_king_location:
-            allowed_moves.pop(i)
-        elif allowed_moves[i] == white_king_location:
-            allowed_moves.pop(i)"""
+    for i in allowed_moves:
+        if i==white_king_location or i==black_king_location:
+            index = allowed_moves.index(i)
+            allowed_moves.pop(index)
+    
+    
 
 
     
@@ -1095,7 +1095,6 @@ while running:
     check_total_moves()
     check_king_check()
 
-    
 
     if turn == "white":
         py.draw.rect(screen, 'gold', (200, 640, 560, 70))
