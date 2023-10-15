@@ -4,13 +4,13 @@ py.init()
 screen = py.display.set_mode((960, 700))
 timer = py.time.Clock()
 
-text = py.font.Font(None, 30)
+font = py.font.Font(None, 30)
 allowed_moves = []
 lost_pieces_white = []
 lost_pieces_black = []
 white_total_moves = []
 black_total_moves = []
-
+checking_piece = []
 
 
 def create_board():
@@ -24,8 +24,8 @@ def create_board():
     py.draw.rect(screen, 'white', (764, 0, 194, 698))
 
     #corner texts
-    screen.blit(text.render("White Lost Pieces", True, 'black'), (10, 20))
-    screen.blit(text.render("Black Lost Pieces", True, 'black'), (770, 20))
+    screen.blit(font.render("White Lost Pieces", True, 'black'), (10, 20))
+    screen.blit(font.render("Black Lost Pieces", True, 'black'), (770, 20))
     py.draw.line(screen, 'black', (0, 70), (960, 70), 2)
 
     for i in range(4):
@@ -538,6 +538,7 @@ def draw_lost_pieces():
 
 
 
+
 def check_white_total():
     for i in range(len(white_pieces)):
         selected = [i, white_pieces[i]]
@@ -760,6 +761,7 @@ def check_white_total():
                         and (y+moves[i][1])>=0:
                         if (x+moves[i][0], y+moves[i][1]) not in white_total_moves:
                             white_total_moves.append((x+moves[i][0], y+moves[i][1]))
+
 
 
 def check_black_total():
@@ -1062,7 +1064,7 @@ def check_king_check():
         white_check = False
 
 
-    black_index = -1    
+    black_index = -1
     for i in range(len(black_pieces)):
         if black_pieces[i] == "king":
             black_index=i
@@ -1072,6 +1074,14 @@ def check_king_check():
         black_check = True
     else:
         black_check = False
+
+
+
+new_font = py.font.Font(None, 60)
+text_surface = new_font.render("you are check", True, "white", "black")
+textrect = text_surface.get_rect()
+textrect.center = (480, 40)
+
 
 
 # white or black
@@ -1095,6 +1105,7 @@ while running:
     check_total_moves()
     check_king_check()
 
+    
 
     if turn == "white":
         py.draw.rect(screen, 'gold', (200, 640, 560, 70))
@@ -1106,6 +1117,9 @@ while running:
         check_moves(selected_piece)
         draw_allowed_moves()
 
+
+    if (black_check == True and selected_piece == [-1, '']) or (white_check == True and selected_piece == [-1, '']):
+        screen.blit(text_surface, textrect)
 
     for event in py.event.get():
         if event.type == py.QUIT:
@@ -1127,24 +1141,54 @@ while running:
                     alter = selected_piece
 
                 if selected_coords in allowed_moves:
+                    
                     if selected_coords in black_locations:
-                        allowed_moves = []
                         white_total_moves = []
                         black_total_moves = []
+                        previous_location = white_locations[index]
                         white_locations[index] = selected_coords
-                        selected_piece = [-1, '']
-                        index = black_locations.index(selected_coords)
-                        lost_pieces_black.append(black_pieces[index])
-                        black_locations.pop(index)
-                        black_pieces.pop(index)
-                        turn = 'black'
-                    else:
+                        if white_pieces[index] == 'king':
+                            white_king_location = white_locations[index]
                         allowed_moves = []
+
+                        index2 = black_locations.index(selected_coords)
+                        lost = black_locations.pop(index2)
+                        lost_piece = black_pieces.pop(index2)                        
+                        lost_pieces_black.append(black_pieces[index2])
+
+                        selected_piece = [-1, '']
+                        check_total_moves()
+                        check_king_check()
+                        if white_check==True:
+                            black_locations.append(lost)
+                            black_pieces.append(lost_piece)
+                            lost_pieces_black.pop(black_pieces[index2])
+                            white_locations[index] = previous_location
+                            if white_pieces[index] == 'king':
+                                white_king_location = previous_location
+                            selected_piece = [-1, '']
+                        else:
+                            white_locations[index] = selected_coords
+                            turn = 'black'
+                    else:                                                                            
                         white_total_moves = []
                         black_total_moves = []
+                        previous_location = white_locations[index]
                         white_locations[index] = selected_coords
+                        if white_pieces[index] == 'king':
+                            white_king_location = white_locations[index]
+                        allowed_moves = []
                         selected_piece = [-1, '']
-                        turn = 'black'
+                        check_total_moves()
+                        check_king_check()
+                        if white_check==True:
+                            white_locations[index] = previous_location
+                            if white_pieces[index] == 'king':
+                                white_king_location = previous_location
+                            selected_piece = [-1, '']
+                        else:
+                            selected_piece = [-1, '']
+                            turn = 'black'
             
             if (turn == "black"):
                 if (selected_coords in black_locations):
@@ -1158,7 +1202,10 @@ while running:
                     alter = selected_piece
 
                 if selected_coords in allowed_moves:
-                    if selected_coords in white_locations:
+                    if black_check == True:
+                        allowed_moves = []
+                        selected_piece = [-1, '']
+                    elif selected_coords in white_locations:
                         allowed_moves = []
                         white_total_moves = []
                         black_total_moves = []
@@ -1197,7 +1244,7 @@ while running:
                     
             
 
-
+    
     py.display.flip()
 
 
