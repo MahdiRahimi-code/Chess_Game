@@ -1193,40 +1193,7 @@ while running:
                         else:
                             selected_piece = [-1, '']
                             turn = 'black'
-            
-            """if (turn == "black"):
-                if (selected_coords in black_locations):
-                    allowed_moves = []
-                    index = black_locations.index(selected_coords)
-                    selected_piece = [index, black_pieces[index]]
-                    if alter == selected_piece:
-                        alter = [-1, -1]
-                        selected_piece = [-1, '']
 
-                    alter = selected_piece
-
-                if selected_coords in allowed_moves:
-                    if black_check == True:
-                        allowed_moves = []
-                        selected_piece = [-1, '']
-                    elif selected_coords in white_locations:
-                        allowed_moves = []
-                        white_total_moves = []
-                        black_total_moves = []
-                        black_locations[index] = selected_coords
-                        selected_piece = [-1, '']
-                        index = white_locations.index(selected_coords)
-                        lost_pieces_white.append(white_pieces[index])
-                        white_locations.pop(index)
-                        white_pieces.pop(index)
-                        turn = 'white'
-                    else:
-                        allowed_moves = []
-                        white_total_moves = []
-                        black_total_moves = []
-                        black_locations[index] = selected_coords
-                        selected_piece = [-1, '']
-                        turn = 'white'"""
             
             if (turn == "black"):
                 if (selected_coords in black_locations):
