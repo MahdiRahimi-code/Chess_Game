@@ -1,4 +1,5 @@
 import pygame as py
+import time
 
 py.init()
 screen = py.display.set_mode((960, 700))
@@ -1077,10 +1078,13 @@ def check_king_check():
 
 
 
+white_win = False
+black_win = False
+check_counter = 8
+
+
 new_font = py.font.Font(None, 60)
-text_surface = new_font.render("you are check", True, "white", "black")
-textrect = text_surface.get_rect()
-textrect.center = (480, 40)
+
 
 
 
@@ -1094,7 +1098,13 @@ running = True
 white_check = False
 black_check = False
 
-while running:
+
+
+
+while running and black_win == False  and  white_win == False:
+    text_surface = new_font.render("you are check _ " + str(check_counter), True, "white", "black")
+    textrect = text_surface.get_rect()
+    textrect.center = (480, 40)
     timer.tick(60)
     screen.fill((115, 73, 31))
     create_board()
@@ -1106,6 +1116,23 @@ while running:
     check_king_check()
 
     
+    if (white_check == True) and check_counter == 0:        
+        text_surface2 = new_font.render("black won the game", True, "white", "black")
+        textrect2 = text_surface2.get_rect()
+        textrect2.center = (480, 400)
+        screen.blit(text_surface2, textrect2)
+        for event in py.event.get():            
+            if event.type == py.MOUSEBUTTONDOWN and event.button == 1:
+                black_win = True
+    if (black_check == True) and check_counter == 0:
+        text_surface2 = new_font.render("white won the game", True, "white", "black")
+        textrect2 = text_surface2.get_rect()
+        textrect2.center = (480, 400)
+        screen.blit(text_surface2, textrect2)
+        for event in py.event.get():            
+            if event.type == py.MOUSEBUTTONDOWN and event.button == 1:
+                white_win = True
+
 
     if turn == "white":
         py.draw.rect(screen, 'gold', (200, 640, 560, 70))
@@ -1117,7 +1144,7 @@ while running:
         check_moves(selected_piece)
         draw_allowed_moves()
 
-
+    # blit the text to show you are check
     if (black_check == True and selected_piece == [-1, '']) or (white_check == True and selected_piece == [-1, '']):
         screen.blit(text_surface, textrect)
 
@@ -1137,6 +1164,7 @@ while running:
                     if alter == selected_piece:
                         alter = [-1, -1]
                         selected_piece = [-1, '']
+                    
 
                     alter = selected_piece
 
@@ -1167,9 +1195,11 @@ while running:
                             if white_pieces[index] == 'king':
                                 white_king_location = previous_location
                             selected_piece = [-1, '']
+                            check_counter -= 1
                         else:
                             white_locations[index] = selected_coords
                             turn = 'black'
+                            check_counter = 8
                     else:                                                                            
                         white_total_moves = []
                         black_total_moves = []
@@ -1190,9 +1220,11 @@ while running:
                             black_total_moves = []
                             check_total_moves()
                             check_king_check()
+                            check_counter -= 1
                         else:
                             selected_piece = [-1, '']
                             turn = 'black'
+                            check_counter = 8
 
             
             if (turn == "black"):
@@ -1233,9 +1265,11 @@ while running:
                             if black_pieces[index] == 'king':
                                 black_king_location = previous_location
                             selected_piece = [-1, '']
+                            check_counter -= 1
                         else:
                             black_locations[index] = selected_coords
                             turn = 'white'
+                            check_counter = 8
                     else:                                                                            
                         black_total_moves = []
                         white_total_moves = []
@@ -1256,9 +1290,11 @@ while running:
                             white_total_moves = []
                             check_total_moves()
                             check_king_check()
+                            check_counter -= 1
                         else:
                             selected_piece = [-1, '']
                             turn = 'white'
+                            check_counter = 8
                 
 
                 
