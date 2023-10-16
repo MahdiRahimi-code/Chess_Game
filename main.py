@@ -1154,7 +1154,7 @@ while running:
                         index2 = black_locations.index(selected_coords)
                         lost = black_locations.pop(index2)
                         lost_piece = black_pieces.pop(index2)                        
-                        lost_pieces_black.append(black_pieces[index2])
+                        lost_pieces_black.append(lost_piece)
 
                         selected_piece = [-1, '']
                         check_total_moves()
@@ -1186,11 +1186,15 @@ while running:
                             if white_pieces[index] == 'king':
                                 white_king_location = previous_location
                             selected_piece = [-1, '']
+                            white_total_moves = []
+                            black_total_moves = []
+                            check_total_moves()
+                            check_king_check()
                         else:
                             selected_piece = [-1, '']
                             turn = 'black'
             
-            if (turn == "black"):
+            """if (turn == "black"):
                 if (selected_coords in black_locations):
                     allowed_moves = []
                     index = black_locations.index(selected_coords)
@@ -1222,8 +1226,72 @@ while running:
                         black_total_moves = []
                         black_locations[index] = selected_coords
                         selected_piece = [-1, '']
-                        turn = 'white'
-                
+                        turn = 'white'"""
+            
+            if (turn == "black"):
+                if (selected_coords in black_locations):
+                    allowed_moves = []
+                    index = black_locations.index(selected_coords)
+                    selected_piece = [index, black_pieces[index]]
+                    if alter == selected_piece:
+                        alter = [-1, -1]
+                        selected_piece = [-1, '']
+
+                    alter = selected_piece
+
+                if selected_coords in allowed_moves:
+                    
+                    if selected_coords in white_locations:
+                        black_total_moves = []
+                        white_total_moves = []
+                        previous_location = black_locations[index]
+                        black_locations[index] = selected_coords
+                        if black_pieces[index] == 'king':
+                            black_king_location = black_locations[index]
+                        allowed_moves = []
+
+                        index2 = white_locations.index(selected_coords)
+                        lost = white_locations.pop(index2)
+                        lost_piece = white_pieces.pop(index2)                        
+                        lost_pieces_white.append(lost_piece)
+
+                        selected_piece = [-1, '']
+                        check_total_moves()
+                        check_king_check()
+                        if black_check==True:
+                            white_locations.append(lost)
+                            white_pieces.append(lost_piece)
+                            lost_pieces_white.pop(white_pieces[index2])
+                            black_locations[index] = previous_location
+                            if black_pieces[index] == 'king':
+                                black_king_location = previous_location
+                            selected_piece = [-1, '']
+                        else:
+                            black_locations[index] = selected_coords
+                            turn = 'white'
+                    else:                                                                            
+                        black_total_moves = []
+                        white_total_moves = []
+                        previous_location = black_locations[index]
+                        black_locations[index] = selected_coords
+                        if black_pieces[index] == 'king':
+                            black_king_location = black_locations[index]
+                        allowed_moves = []
+                        selected_piece = [-1, '']
+                        check_total_moves()
+                        check_king_check()
+                        if black_check==True:
+                            black_locations[index] = previous_location
+                            if black_pieces[index] == 'king':
+                                black_king_location = previous_location
+                            selected_piece = [-1, '']
+                            black_total_moves = []
+                            white_total_moves = []
+                            check_total_moves()
+                            check_king_check()
+                        else:
+                            selected_piece = [-1, '']
+                            turn = 'white'
                 
 
                 
