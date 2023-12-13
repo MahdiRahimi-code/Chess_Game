@@ -1,8 +1,10 @@
 import pygame as py
 import time
+import tkinter
+from tkinter import messagebox
 
 py.init()
-screen = py.display.set_mode((960, 700))
+screen = py.display.set_mode((1100, 700))
 timer = py.time.Clock()
 
 font = py.font.Font(None, 30)
@@ -12,6 +14,17 @@ lost_pieces_black = []
 white_total_moves = []
 black_total_moves = []
 checking_piece = []
+
+
+black_pieces = ['castle', 'horse', 'elephant' ,'queen', 'king', 'elephant', 'horse', 'castle',
+                'soldier', 'soldier', 'soldier', 'soldier', 'soldier', 'soldier', 'soldier', 'soldier']
+black_locations = [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0),
+                    (0, 1), (1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1)]
+white_pieces = ['castle', 'horse', 'elephant' ,'queen', 'king', 'elephant', 'horse', 'castle',
+                'soldier', 'soldier', 'soldier', 'soldier', 'soldier', 'soldier', 'soldier', 'soldier']
+white_locations = [(0, 7), (1, 7), (2, 7), (3, 7), (4, 7), (5, 7), (6, 7), (7, 7),
+                    (0, 6), (1, 6), (2, 6), (3, 6), (4, 6), (5, 6), (6, 6), (7, 6)]
+
 
 
 def create_board():
@@ -72,17 +85,6 @@ def load_images():
     black_soldier = py.transform.scale(black_soldier, (60, 60))
 
 
-    
-
-black_pieces = ['castle', 'horse', 'elephant' ,'queen', 'king', 'elephant', 'horse', 'castle',
-                'soldier', 'soldier', 'soldier', 'soldier', 'soldier', 'soldier', 'soldier', 'soldier']
-black_locations = [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0),
-                    (0, 1), (1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1)]
-white_pieces = ['castle', 'horse', 'elephant' ,'queen', 'king', 'elephant', 'horse', 'castle',
-                'soldier', 'soldier', 'soldier', 'soldier', 'soldier', 'soldier', 'soldier', 'soldier']
-white_locations = [(0, 7), (1, 7), (2, 7), (3, 7), (4, 7), (5, 7), (6, 7), (7, 7),
-                    (0, 6), (1, 6), (2, 6), (3, 6), (4, 6), (5, 6), (6, 6), (7, 6)]
-
 
 
 def draw_pieces():
@@ -139,6 +141,7 @@ def draw_pieces():
 
 
 
+
 def check_moves(selected):
     if selected[1] == 'soldier':
         check_soldier_moves(selected)
@@ -158,7 +161,6 @@ def check_moves(selected):
         if i==white_king_location or i==black_king_location:
             index = allowed_moves.index(i)
             allowed_moves.pop(index)
-    
     
 
 
@@ -220,6 +222,7 @@ def check_soldier_moves(selected):
 
 
 
+
 def check_king_moves(selected):
     if turn == "white":
         x = white_locations[selected[0]][0]
@@ -248,6 +251,7 @@ def check_king_moves(selected):
 
 
 
+
 def check_horse_moves(selected):
     if turn == "white":
         moves = [(2, -1), (-2, -1), (1, -2), (-1, -2),
@@ -272,6 +276,7 @@ def check_horse_moves(selected):
             y = location[1] + moves[i][1]
             if (x,y) not in black_locations and (x>=0 and y<=7 and x<=7 and y>=0) and (x, y) not in allowed_moves:
                 allowed_moves.append((x, y))
+
 
 
 
@@ -363,7 +368,8 @@ def check_elephant_moves(selected):
             y4 = y4 + 1
 
 
-#####################################################
+
+
 def check_castle_moves(selected):
     if turn == "white":
         x = white_locations[selected[0]][0]
@@ -439,9 +445,11 @@ def check_castle_moves(selected):
 
 
 
+
 def check_queen_moves(selected):
     check_castle_moves(selected)
     check_elephant_moves(selected)
+
 
 
 
@@ -471,6 +479,7 @@ def draw_allowed_moves():
                 py.draw.rect(screen, 'red', (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
             else:
                 py.draw.rect(screen, (22, 250, 250), (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
+
 
 
 
@@ -765,6 +774,7 @@ def check_white_total():
 
 
 
+
 def check_black_total():
     for i in range(len(black_pieces)):
         selected = [i, black_pieces[i]]
@@ -990,6 +1000,7 @@ def check_black_total():
 
 
 
+
 def check_total_moves():
     check_white_total()
     check_black_total()
@@ -1043,7 +1054,7 @@ def draw_check():
             last_flash_time = current_time
 
         py.draw.rect(screen, current_color, (200+ 70*black_king_location[0], 68+ 70*black_king_location[1], 70, 70), 4)
-        
+
         
 white_king_location = ()
 black_king_location = ()
@@ -1086,14 +1097,13 @@ check_counter = 8
 new_font = py.font.Font(None, 60)
 
 
-
-
 # white or black
 turn = 'white'
 selected_piece = [-1, '']
 
 # variable for disselecting piece
 alter = [-1 , -1]
+
 running = True
 white_check = False
 black_check = False
@@ -1115,8 +1125,15 @@ while running and black_win == False  and  white_win == False:
     check_total_moves()
     check_king_check()
 
+
+
+    s = py.image.load("C:\\Users\\AceR\\Desktop\\python\\Chess\\images\\surrender.png")
+    surrender = py.transform.scale(s, (80, 80))
+    screen.blit(surrender, (980, 200))
     
-    if (white_check == True) and check_counter == 0:        
+
+    
+    if (white_check == True) and check_counter == 0:  
         text_surface2 = new_font.render("black won the game", True, "white", "black")
         textrect2 = text_surface2.get_rect()
         textrect2.center = (480, 400)
@@ -1151,12 +1168,17 @@ while running and black_win == False  and  white_win == False:
     for event in py.event.get():
         if event.type == py.QUIT:
             running = False
+        
         if event.type == py.MOUSEBUTTONDOWN and event.button == 1:
             select_x = (event.pos[0] - 200) // 70
             select_y = (event.pos[1] - 70) // 70
             selected_coords = (select_x, select_y)
 
             if (turn == "white"):
+                if selected_coords == (11,2):
+                    result = messagebox.askyesno("Surrender", "Are you sure?\nYou will lose the game")
+                    if result:
+                        black_win = True
                 if (selected_coords in white_locations):
                     allowed_moves = []
                     index = white_locations.index(selected_coords)
@@ -1228,6 +1250,10 @@ while running and black_win == False  and  white_win == False:
 
             
             if (turn == "black"):
+                if selected_coords == (11,2):
+                    result = messagebox.askyesno("Surrender", "Are you sure?\nYou will lose the game")
+                    if result:
+                        white_win = True
                 if (selected_coords in black_locations):
                     allowed_moves = []
                     index = black_locations.index(selected_coords)
@@ -1295,27 +1321,6 @@ while running and black_win == False  and  white_win == False:
                             selected_piece = [-1, '']
                             turn = 'white'
                             check_counter = 8
-                
-
-                
-
-                         
-
-
-                   
-
-                    
-
-
-                    
-                    
-
-            
-
-                    
-            
-
-    
     py.display.flip()
 
 
