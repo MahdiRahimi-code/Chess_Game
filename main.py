@@ -170,11 +170,6 @@ def check_moves(selected):
     elif selected[1] == 'king':
         check_king_moves(selected)
     
-    # king can not be ommited
-    for i in allowed_moves:
-        if i==white_king_location or i==black_king_location:
-            index = allowed_moves.index(i)
-            allowed_moves.pop(index)
     
 
 
@@ -390,7 +385,7 @@ def check_castle_moves(selected):
         y = white_locations[selected[0]][1]
 
         x1 = x - 1
-        while (x1, y) not in white_locations and x1>=0:
+        while (x1, y) not in white_locations and x1>=0 and (x1, y) not in allowed_moves:
             if (x1, y) in black_locations:
                 allowed_moves.append((x1, y))
                 break
@@ -398,7 +393,7 @@ def check_castle_moves(selected):
             x1 -= 1
         
         x2 = x + 1
-        while (x2, y) not in white_locations and x2<=7:
+        while (x2, y) not in white_locations and x2<=7 and (x2, y) not in allowed_moves:
             if (x2, y) in black_locations:
                 allowed_moves.append((x2, y))
                 break
@@ -406,7 +401,7 @@ def check_castle_moves(selected):
             x2 += 1
         
         y1 = y - 1
-        while (x, y1) not in white_locations and y1>=0:
+        while (x, y1) not in white_locations and y1>=0 and (x, y1) not in allowed_moves:
             if (x, y1) in black_locations:
                 allowed_moves.append((x, y1))
                 break
@@ -414,7 +409,7 @@ def check_castle_moves(selected):
             y1 -= 1
         
         y2 = y + 1
-        while (x, y2) not in white_locations and y2<=7:
+        while (x, y2) not in white_locations and y2<=7 and (x, y2) not in allowed_moves:
             if (x, y2) in black_locations:
                 allowed_moves.append((x, y2))
                 break
@@ -426,7 +421,7 @@ def check_castle_moves(selected):
         y = black_locations[selected[0]][1]
 
         x1 = x - 1
-        while (x1, y) not in black_locations and x1>=0:
+        while (x1, y) not in black_locations and x1>=0 and (x1, y) not in allowed_moves:
             if (x1, y) in white_locations:
                 allowed_moves.append((x1, y))
                 break
@@ -434,7 +429,7 @@ def check_castle_moves(selected):
             x1 -= 1
         
         x2 = x + 1
-        while (x2, y) not in black_locations and x2<=7:
+        while (x2, y) not in black_locations and x2<=7 and (x2, y) not in allowed_moves:
             if (x2, y) in white_locations:
                 allowed_moves.append((x2, y))
                 break
@@ -442,7 +437,7 @@ def check_castle_moves(selected):
             x2 += 1
         
         y1 = y - 1
-        while (x, y1) not in black_locations and y1>=0:
+        while (x, y1) not in black_locations and y1>=0 and (x, y1) not in allowed_moves:
             if (x, y1) in white_locations:
                 allowed_moves.append((x, y1))
                 break
@@ -450,7 +445,7 @@ def check_castle_moves(selected):
             y1 -= 1
         
         y2 = y + 1
-        while (x, y2) not in black_locations and y2<=7:
+        while (x, y2) not in black_locations and y2<=7 and (x, y1) not in allowed_moves:
             if (x, y2) in white_locations:
                 allowed_moves.append((x, y2))
                 break
@@ -469,30 +464,34 @@ def check_queen_moves(selected):
 
 def draw_allowed_moves():
     if turn == 'white':
+        colors = [(94, 14, 232), (12, 240, 198), (230, 119, 9), (219, 230, 9), (13, 230, 9), (9, 230, 120), \
+            (9, 230, 178), (8, 105, 209), (5, 20, 237), (112, 4, 207), (181, 12, 232), (212, 6, 177)
+            ]
+        j=0
         for i in range(len(allowed_moves)):
+            if j==len(colors)-1:
+                j=0
             if allowed_moves[i] in black_locations:
                 py.draw.rect(screen, 'red', (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
             else:
-                py.draw.rect(screen, (22, 250, 250), (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
-    else:
-        for i in range(len(allowed_moves)):
-            if allowed_moves[i] in white_locations:
-                py.draw.rect(screen, 'red', (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
-            else:
-                py.draw.rect(screen, (22, 250, 250), (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
+                py.draw.rect(screen, colors[j], (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
+                j+=1
+                
         
     if turn == 'black':
+        colors = [(94, 14, 232), (39, 209, 17), (230, 119, 9), (219, 230, 9), (13, 230, 9), (9, 230, 120), \
+            (9, 230, 178), (8, 105, 209), (5, 20, 237), (112, 4, 207), (181, 12, 232), (212, 6, 177)
+            ]
+        j=0
         for i in range(len(allowed_moves)):
+            if j==len(colors)-1:
+                j=0
             if allowed_moves[i] in white_locations:
                 py.draw.rect(screen, 'red', (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
             else:
-                py.draw.rect(screen, (22, 250, 250), (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
-    else:
-        for i in range(len(allowed_moves)):
-            if allowed_moves[i] in black_locations:
-                py.draw.rect(screen, 'red', (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
-            else:
-                py.draw.rect(screen, (22, 250, 250), (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
+                py.draw.rect(screen, colors[j], (205+ 70*allowed_moves[i][0], 75+ 70*allowed_moves[i][1], 60, 60), 2)
+                j+=1
+    
 
 
 
@@ -1116,13 +1115,12 @@ black_check = False
 
 
 
-
 while running and black_win == False  and  white_win == False:
     #text for check
     text_surface = new_font.render("you are check _ " + str(check_counter), True, "white", "black")
     textrect = text_surface.get_rect()
     textrect.center = (480, 40)
-    timer.tick(60)
+    timer.tick(30)
     screen.fill((115, 73, 31))
     create_board()
     load_images()
