@@ -3,6 +3,33 @@ import time
 import tkinter
 from tkinter import messagebox
 
+
+
+class Log:
+    def __init__(self, piece_index, piece_name, piece_color, start, destination, lost_piece_index):
+        self.piece_index = piece_index
+        self.piece_name = piece_name
+        self.piece_color = piece_color
+        self.start = start
+        self.destination = destination
+
+
+class Stack:
+    def __init__(self):
+        self.stack = []
+    def push(self, item):
+        self.stack.append(item)
+    def isEmpty(self):
+        if len(self.stack) == 0:
+            return True
+    def pop(self):
+        if not self.isEmpty():
+            return self.stack.pop()
+        
+
+log = Stack()
+
+
 py.init()
 screen = py.display.set_mode((1100, 700))
 timer = py.time.Clock()
@@ -20,13 +47,11 @@ white_king_location = ()
 black_king_location = ()
 
 
-
 color1 = 'red'  # First color
 color2 = 'blue'  # Second color
 current_color = color1
 flash_interval = 500  # Flash interval in milliseconds
 last_flash_time = 0
-
 
 
 
@@ -97,6 +122,21 @@ def load_images():
     black_king = py.transform.scale(black_king, (55, 55))
     black_soldier = py.image.load("C:\\Users\\Acer\\Desktop\\Python\\Chess\\images\\black soldier.png")
     black_soldier = py.transform.scale(black_soldier, (50, 50))
+
+    global surrender
+    surrender = py.image.load("C:\\Users\\AceR\\Desktop\\python\\Chess\\images\\surrender.png")
+    surrender = py.transform.scale(surrender, (80, 80))
+    screen.blit(surrender, (990, 70))
+
+    global redo, undo
+    redo = py.image.load("C:\\Users\\AceR\\Desktop\\python\\Chess\\images\\redo.png")
+    redo = py.transform.scale(redo, (60, 60))
+    screen.blit(redo, (1000, 270))
+
+    undo = py.image.load("C:\\Users\\AceR\\Desktop\\python\\Chess\\images\\undo.png")
+    undo = py.transform.scale(undo, (70, 70))
+    screen.blit(undo, (995, 470))
+    
 
 
 
@@ -445,7 +485,7 @@ def check_castle_moves(selected):
             y1 -= 1
         
         y2 = y + 1
-        while (x, y2) not in black_locations and y2<=7 and (x, y1) not in allowed_moves:
+        while (x, y2) not in black_locations and y2<=7 and (x, y2) not in allowed_moves:
             if (x, y2) in white_locations:
                 allowed_moves.append((x, y2))
                 break
@@ -498,62 +538,62 @@ def draw_allowed_moves():
 
 def draw_lost_pieces():
     for i in range(len(lost_pieces_white)):
-        if lost_pieces_white[i] == 'soldier':
+        if lost_pieces_white[i][0] == 'soldier':
             if i>9:
                 screen.blit(white_soldier, (100, 75 + 60*(i-10)))
             else:
                 screen.blit(white_soldier, (5, 75 + 60*i))
 
-        elif lost_pieces_white[i] == 'castle':
+        elif lost_pieces_white[i][0] == 'castle':
             if i>9:
                 screen.blit(white_castle, (100, 75 + 60*(i-10)))
             else:
                 screen.blit(white_castle, (5, 75 + 60*i))
         
-        elif lost_pieces_white[i] == 'horse':
+        elif lost_pieces_white[i][0] == 'horse':
             if i>9:
                 screen.blit(white_horse, (100, 75 + 60*(i-10)))
             else:
                 screen.blit(white_horse, (5, 75 + 60*i))
 
-        elif lost_pieces_white[i] == 'elephant':
+        elif lost_pieces_white[i][0] == 'elephant':
             if i>9:
                 screen.blit(white_elephant, (100, 75 + 60*(i-10)))
             else:
                 screen.blit(white_elephant, (5, 75 + 60*i))
         
-        elif lost_pieces_white[i] == 'queen':
+        elif lost_pieces_white[i][0] == 'queen':
             if i>9:
                 screen.blit(white_queen, (100, 75 + 60*(i-10)))
             else:
                 screen.blit(white_queen, (5, 75 + 60*i))
     
     for i in range(len(lost_pieces_black)):
-        if lost_pieces_black[i] == 'soldier':
+        if lost_pieces_black[i][0] == 'soldier':
             if i>9:
                 screen.blit(black_soldier, (860, 75 + 60*(i-10)))
             else:
                 screen.blit(black_soldier, (785, 75 + 60*i))
 
-        elif lost_pieces_black[i] == 'castle':
+        elif lost_pieces_black[i][0] == 'castle':
             if i>9:
                 screen.blit(black_castle, (860, 75 + 60*(i-10)))
             else:
                 screen.blit(black_castle, (785, 75 + 60*i))
         
-        elif lost_pieces_black[i] == 'horse':
+        elif lost_pieces_black[i][0] == 'horse':
             if i>9:
                 screen.blit(black_horse, (860, 75 + 60*(i-10)))
             else:
                 screen.blit(black_horse, (785, 75 + 60*i))
 
-        elif lost_pieces_black[i] == 'elephant':
+        elif lost_pieces_black[i][0] == 'elephant':
             if i>9:
                 screen.blit(black_elephant, (860, 75 + 60*(i-10)))
             else:
                 screen.blit(black_elephant, (785, 75 + 60*i))
         
-        elif lost_pieces_black[i] == 'queen':
+        elif lost_pieces_black[i][0] == 'queen':
             if i>9:
                 screen.blit(black_queen, (860, 75 + 60*(i-10)))
             else:
@@ -1129,12 +1169,6 @@ while running and black_win == False  and  white_win == False:
     draw_lost_pieces()
     check_total_moves()
     check_king_check()
-
-
-
-    s = py.image.load("C:\\Users\\AceR\\Desktop\\python\\Chess\\images\\surrender.png")
-    surrender = py.transform.scale(s, (80, 80))
-    screen.blit(surrender, (980, 200))
     
 
     
@@ -1166,9 +1200,10 @@ while running and black_win == False  and  white_win == False:
             select_x = (event.pos[0] - 200) // 70
             select_y = (event.pos[1] - 70) // 70
             selected_coords = (select_x, select_y)
+            
 
             if (turn == "white"):
-                if selected_coords == (11,2):
+                if selected_coords == (11,0) or selected_coords == (12,0):
                     result = messagebox.askyesno("Surrender", "Are you sure?\nYou will lose the game")
                     if result:
                         black_win = True
@@ -1195,23 +1230,26 @@ while running and black_win == False  and  white_win == False:
                         allowed_moves = []
 
                         index2 = black_locations.index(selected_coords)
-                        lost = black_locations.pop(index2)
-                        lost_piece = black_pieces.pop(index2)                        
+                        lost_piece_location = black_locations.pop(index2)
+                        lost_piece_name = black_pieces.pop(index2)
+                        lost_piece = [lost_piece_name, lost_piece_location]
                         lost_pieces_black.append(lost_piece)
 
                         selected_piece = [-1, '']
                         check_total_moves()
                         check_king_check()
                         if white_check==True:
-                            black_locations.append(lost)
-                            black_pieces.append(lost_piece)
-                            lost_pieces_black.pop(black_pieces[index2])
+                            black_locations.append(lost_piece_location)
+                            black_pieces.append(lost_piece_name)
+                            lost_pieces_black.pop(lost_piece)
                             white_locations[index] = previous_location
                             if white_pieces[index] == 'king':
                                 white_king_location = previous_location
                             selected_piece = [-1, '']
                             check_counter -= 1
                         else:
+                            movement = Log(index, "white", white_pieces[index], white_locations[index], selected_coords, index2)
+                            log.push(movement)
                             white_locations[index] = selected_coords
                             turn = 'black'
                             check_counter = 8
@@ -1237,6 +1275,8 @@ while running and black_win == False  and  white_win == False:
                             check_king_check()
                             check_counter -= 1
                         else:
+                            movement = Log(index, "white", white_pieces[index], white_locations[index], selected_coords, -1)
+                            log.push(movement)
                             selected_piece = [-1, '']
                             turn = 'black'
                             check_counter = 8
@@ -1269,23 +1309,26 @@ while running and black_win == False  and  white_win == False:
                         allowed_moves = []
 
                         index2 = white_locations.index(selected_coords)
-                        lost = white_locations.pop(index2)
-                        lost_piece = white_pieces.pop(index2)                        
+                        lost_piece_location = white_locations.pop(index2)
+                        lost_piece_name = white_pieces.pop(index2)
+                        lost_piece = [lost_piece_name, lost_piece_location]                        
                         lost_pieces_white.append(lost_piece)
 
                         selected_piece = [-1, '']
                         check_total_moves()
                         check_king_check()
                         if black_check==True:
-                            white_locations.append(lost)
-                            white_pieces.append(lost_piece)
-                            lost_pieces_white.pop(white_pieces[index2])
+                            white_locations.append(lost_piece_location)
+                            white_pieces.append(lost_piece_name)
+                            lost_pieces_white.pop(lost_piece)
                             black_locations[index] = previous_location
                             if black_pieces[index] == 'king':
                                 black_king_location = previous_location
                             selected_piece = [-1, '']
                             check_counter -= 1
                         else:
+                            movement = Log(index, "black", black_pieces[index], black_locations[index], selected_coords, index2)
+                            log.push(movement)
                             black_locations[index] = selected_coords
                             turn = 'white'
                             check_counter = 8
@@ -1311,6 +1354,8 @@ while running and black_win == False  and  white_win == False:
                             check_king_check()
                             check_counter -= 1
                         else:
+                            movement = Log(index, "black", black_pieces[index], black_locations[index], selected_coords, -1)
+                            log.push(movement)
                             selected_piece = [-1, '']
                             turn = 'white'
                             check_counter = 8
