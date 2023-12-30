@@ -16,6 +16,20 @@ black_total_moves = []
 checking_piece = []
 
 
+white_king_location = ()
+black_king_location = ()
+
+
+
+color1 = 'red'  # First color
+color2 = 'blue'  # Second color
+current_color = color1
+flash_interval = 500  # Flash interval in milliseconds
+last_flash_time = 0
+
+
+
+
 black_pieces = ['castle', 'horse', 'elephant' ,'queen', 'king', 'elephant', 'horse', 'castle',
                 'soldier', 'soldier', 'soldier', 'soldier', 'soldier', 'soldier', 'soldier', 'soldier']
 black_locations = [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0),
@@ -58,31 +72,31 @@ def create_board():
 def load_images():
     global white_castle, white_horse, white_elephant, white_queen, white_king, white_soldier
     white_castle = py.image.load("C:\\Users\\Acer\\Desktop\\Python\\Chess\\images\\white castle.png")
-    white_castle = py.transform.scale(white_castle, (60, 60))
+    white_castle = py.transform.scale(white_castle, (55, 55))
     white_horse = py.image.load("C:\\Users\\Acer\\Desktop\\Python\\Chess\\images\\white horse.png")
-    white_horse = py.transform.scale(white_horse, (60, 60))
+    white_horse = py.transform.scale(white_horse, (55, 55))
     white_elephant = py.image.load("C:\\Users\\Acer\\Desktop\\Python\\Chess\\images\\white elephant.png")
-    white_elephant = py.transform.scale(white_elephant, (60, 60))
+    white_elephant = py.transform.scale(white_elephant, (55, 55))
     white_queen = py.image.load("C:\\Users\\Acer\\Desktop\\Python\\Chess\\images\\white queen.png")
-    white_queen = py.transform.scale(white_queen, (60, 60))
+    white_queen = py.transform.scale(white_queen, (55, 55))
     white_king = py.image.load("C:\\Users\\Acer\\Desktop\\Python\\Chess\\images\\white king.png")
-    white_king = py.transform.scale(white_king, (60, 60))
+    white_king = py.transform.scale(white_king, (55, 55))
     white_soldier = py.image.load("C:\\Users\\Acer\\Desktop\\Python\\Chess\\images\\white soldier.png")
-    white_soldier = py.transform.scale(white_soldier, (60, 60))
+    white_soldier = py.transform.scale(white_soldier, (50, 50))
 
     global black_castle, black_horse, black_elephant, black_queen, black_king, black_soldier
     black_castle = py.image.load("C:\\Users\\Acer\\Desktop\\Python\\Chess\\images\\black castle.png")
-    black_castle = py.transform.scale(black_castle, (60, 60))
+    black_castle = py.transform.scale(black_castle, (55, 55))
     black_horse = py.image.load("C:\\Users\\Acer\\Desktop\\Python\\Chess\\images\\black horse.png")
-    black_horse = py.transform.scale(black_horse, (60, 60))
+    black_horse = py.transform.scale(black_horse, (55, 55))
     black_elephant = py.image.load("C:\\Users\\Acer\\Desktop\\Python\\Chess\\images\\black elephant.png")
-    black_elephant = py.transform.scale(black_elephant, (60, 60))
+    black_elephant = py.transform.scale(black_elephant, (55, 55))
     black_queen = py.image.load("C:\\Users\\Acer\\Desktop\\Python\\Chess\\images\\black queen.png")
-    black_queen = py.transform.scale(black_queen, (60, 60))
+    black_queen = py.transform.scale(black_queen, (55, 55))
     black_king = py.image.load("C:\\Users\\Acer\\Desktop\\Python\\Chess\\images\\black king.png")
-    black_king = py.transform.scale(black_king, (60, 60))
+    black_king = py.transform.scale(black_king, (55, 55))
     black_soldier = py.image.load("C:\\Users\\Acer\\Desktop\\Python\\Chess\\images\\black soldier.png")
-    black_soldier = py.transform.scale(black_soldier, (60, 60))
+    black_soldier = py.transform.scale(black_soldier, (50, 50))
 
 
 
@@ -90,22 +104,22 @@ def load_images():
 def draw_pieces():
     for i in range(len(white_pieces)):
         if white_pieces[i] == 'soldier':
-            screen.blit(white_soldier, (200 + white_locations[i][0]*70, 70 + white_locations[i][1]*70))
+            screen.blit(white_soldier, (205 + white_locations[i][0]*70, 75 + white_locations[i][1]*70))
 
         elif white_pieces[i] == 'castle':
-            screen.blit(white_castle, (200 + white_locations[i][0]*70, 70 + white_locations[i][1]*70))
+            screen.blit(white_castle, (205 + white_locations[i][0]*70, 75 + white_locations[i][1]*70))
         
         elif white_pieces[i] == 'horse':
-            screen.blit(white_horse, (200 + white_locations[i][0]*70, 70 + white_locations[i][1]*70))
+            screen.blit(white_horse, (205 + white_locations[i][0]*70, 75 + white_locations[i][1]*70))
 
         elif white_pieces[i] == 'elephant':
-            screen.blit(white_elephant, (200 + white_locations[i][0]*70, 70 + white_locations[i][1]*70))
+            screen.blit(white_elephant, (205 + white_locations[i][0]*70, 75 + white_locations[i][1]*70))
         
         elif white_pieces[i] == 'queen':
-            screen.blit(white_queen, (200 + white_locations[i][0]*70, 70 + white_locations[i][1]*70))
+            screen.blit(white_queen, (205 + white_locations[i][0]*70, 75 + white_locations[i][1]*70))
         
         elif white_pieces[i] == 'king':
-            screen.blit(white_king, (200 + white_locations[i][0]*70, 70 + white_locations[i][1]*70))
+            screen.blit(white_king, (205 + white_locations[i][0]*70, 75 + white_locations[i][1]*70))
         
         if turn == "white":
             if selected_piece[0] != -1:
@@ -116,22 +130,22 @@ def draw_pieces():
     
     for i in range(len(black_pieces)):
         if black_pieces[i] == 'soldier':
-            screen.blit(black_soldier, (200 + black_locations[i][0]*70, 70 + black_locations[i][1]*70))
+            screen.blit(black_soldier, (205 + black_locations[i][0]*70, 75 + black_locations[i][1]*70))
 
         elif black_pieces[i] == 'castle':
-            screen.blit(black_castle, (200 + black_locations[i][0]*70, 70 + black_locations[i][1]*70))
+            screen.blit(black_castle, (205 + black_locations[i][0]*70, 75 + black_locations[i][1]*70))
         
         elif black_pieces[i] == 'horse':
-            screen.blit(black_horse, (200 + black_locations[i][0]*70, 70 + black_locations[i][1]*70))
+            screen.blit(black_horse, (205 + black_locations[i][0]*70, 75 + black_locations[i][1]*70))
 
         elif black_pieces[i] == 'elephant':
-            screen.blit(black_elephant, (200 + black_locations[i][0]*70, 70 + black_locations[i][1]*70))
+            screen.blit(black_elephant, (205 + black_locations[i][0]*70, 75 + black_locations[i][1]*70))
         
         elif black_pieces[i] == 'queen':
-            screen.blit(black_queen, (200 + black_locations[i][0]*70, 70 + black_locations[i][1]*70))
+            screen.blit(black_queen, (205 + black_locations[i][0]*70, 75 + black_locations[i][1]*70))
         
         elif black_pieces[i] == 'king':
-            screen.blit(black_king, (200 + black_locations[i][0]*70, 70 + black_locations[i][1]*70))
+            screen.blit(black_king, (205 + black_locations[i][0]*70, 75 + black_locations[i][1]*70))
 
         if turn == "black":
             if selected_piece[0] != -1:
@@ -1007,11 +1021,6 @@ def check_total_moves():
 
 
 
-color1 = 'red'  # First color
-color2 = 'blue'  # Second color
-current_color = color1
-flash_interval = 500  # Flash interval in milliseconds
-last_flash_time = 0
 def draw_check():
     global last_flash_time, flash_interval ,current_color , color1 , color2
     
@@ -1055,9 +1064,6 @@ def draw_check():
 
         py.draw.rect(screen, current_color, (200+ 70*black_king_location[0], 68+ 70*black_king_location[1], 70, 70), 4)
 
-        
-white_king_location = ()
-black_king_location = ()
 
 
 def check_king_check():
@@ -1112,6 +1118,7 @@ black_check = False
 
 
 while running and black_win == False  and  white_win == False:
+    #text for check
     text_surface = new_font.render("you are check _ " + str(check_counter), True, "white", "black")
     textrect = text_surface.get_rect()
     textrect.center = (480, 40)
@@ -1133,22 +1140,10 @@ while running and black_win == False  and  white_win == False:
     
 
     
-    if (white_check == True) and check_counter == 0:  
-        text_surface2 = new_font.render("black won the game", True, "white", "black")
-        textrect2 = text_surface2.get_rect()
-        textrect2.center = (480, 400)
-        screen.blit(text_surface2, textrect2)
-        for event in py.event.get():            
-            if event.type == py.MOUSEBUTTONDOWN and event.button == 1:
-                black_win = True
+    if (white_check == True) and check_counter == 0:
+        black_win = True
     if (black_check == True) and check_counter == 0:
-        text_surface2 = new_font.render("white won the game", True, "white", "black")
-        textrect2 = text_surface2.get_rect()
-        textrect2.center = (480, 400)
-        screen.blit(text_surface2, textrect2)
-        for event in py.event.get():            
-            if event.type == py.MOUSEBUTTONDOWN and event.button == 1:
-                white_win = True
+        white_win = True
 
 
     if turn == "white":
@@ -1322,6 +1317,46 @@ while running and black_win == False  and  white_win == False:
                             turn = 'white'
                             check_counter = 8
     py.display.flip()
+
+
+
+if (white_win==True or black_win==True):
+    running = True
+    while running:
+        timer.tick(60)
+        screen.fill((115, 73, 31))
+    
+
+        if (white_win == True) :
+            font_size = 100
+            new_font = py.font.Font(None, font_size)
+            text_surface2 = new_font.render("White won the game", True, "white")
+            textrect2 = text_surface2.get_rect()
+            textrect2.center = (480, 200)
+            screen.blit(text_surface2, textrect2)
+            s = py.image.load("C:\\Users\\AceR\\Desktop\\python\\Chess\\images\\success.png")
+            win = py.transform.scale(s, (200, 200))
+            screen.blit(win, (700, 250))
+        
+        if (black_win == True) :
+            font_size = 100
+            new_font = py.font.Font(None, font_size)
+            text_surface2 = new_font.render("Black won the game", True, "black")
+            textrect2 = text_surface2.get_rect()
+            textrect2.center = (480, 200)
+            screen.blit(text_surface2, textrect2)
+            s = py.image.load("C:\\Users\\AceR\\Desktop\\python\\Chess\\images\\success.png")
+            win = py.transform.scale(s, (200, 200))
+            screen.blit(win, (700, 250))
+            
+
+        for event in py.event.get():
+                if event.type == py.QUIT:
+                    running = False
+
+        py.display.flip()
+
+
 
 
 
