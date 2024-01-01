@@ -1146,6 +1146,7 @@ def check_king_check():
 
 def undoaction():
     global turn
+    
     movement = log_list.pop()
     redo_list.push(movement)
 
@@ -1168,6 +1169,36 @@ def undoaction():
             white_locations.append(movement.lost_piece[1])
             lost_pieces_white.remove(movement.lost_piece)
         turn = movement.piece_color
+
+
+
+def redoaction():
+    global turn
+
+    movement = redo_list.pop()
+    log_list.push(movement)
+
+    if movement.piece_color == "white":
+        index = white_locations.index(movement.start)
+        white_locations[index] = movement.destination
+        if len(movement.lost_piece)!=0:
+            lost_piece = [-1, -1]
+            index2 = black_locations.index(movement.destination)
+            lost_piece[0] = black_pieces.pop(index2)
+            lost_piece[1] = black_locations.pop(index2)
+            lost_pieces_black.append(lost_piece)
+        turn = "black"
+
+    else:
+        index = black_locations.index(movement.start)
+        black_locations[index] = movement.destination
+        if len(movement.lost_piece)!=0:
+            lost_piece = [-1, -1]
+            index2 = white_locations.index(movement.destination)
+            lost_piece[0] = white_pieces.pop(index2)
+            lost_piece[1] = white_locations.pop(index2)
+            lost_pieces_white.append(lost_piece)
+        turn = "white"   
 
 
 
@@ -1393,9 +1424,18 @@ while running and black_win == False  and  white_win == False:
             selected_coords = (select_x, select_y)
 
             if selected_coords == (11, 6) or selected_coords == (12, 6):
-                undoaction()
+                try:
+                    undoaction()
+                except Exception:
+                    messagebox.showerror("Error", "No Moves made to Undo !")
+                    
             
-            
+            if selected_coords == (11, 3) or selected_coords == (12, 3):
+                try:
+                    redoaction()
+                except Exception:
+                    messagebox.showerror("Error", "No Undos made to Redo !")
+
 
             if (turn == "white"):
 
