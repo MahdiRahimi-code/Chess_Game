@@ -6,12 +6,13 @@ from tkinter import messagebox
 
 
 class Log:
-    def __init__(self, piece_index, piece_name, piece_color, start, destination, lost_piece_index):
-        self.piece_index = piece_index
+    def __init__(self, piece_name, piece_color, start, destination, lost_piece):
         self.piece_name = piece_name
         self.piece_color = piece_color
         self.start = start
         self.destination = destination
+        self.lost_piece = lost_piece
+
 
 
 class Stack:
@@ -25,9 +26,12 @@ class Stack:
     def pop(self):
         if not self.isEmpty():
             return self.stack.pop()
-        
+    def clearStack(self):
+        self.stack.clear()
 
-log = Stack()
+
+log_list = Stack()
+redo_list = Stack()
 
 
 py.init()
@@ -212,10 +216,6 @@ def check_moves(selected):
         check_king_moves(selected)
 
     
-    
-    
-    
-
 
     
 def check_soldier_moves(selected):
@@ -508,8 +508,11 @@ def check_queen_moves(selected):
 
 def draw_allowed_moves():
     if turn == 'white':
-        colors = [(94, 14, 232), (12, 240, 198), (230, 119, 9), (219, 230, 9), (13, 230, 9), (9, 230, 120), \
-            (9, 230, 178), (8, 105, 209), (5, 20, 237), (112, 4, 207), (181, 12, 232), (212, 6, 177)
+        colors = [(255, 42, 0), (255, 102, 0), (255, 153, 0), (255, 217, 0), (229, 255, 0), (191, 255, 0), \
+            (153, 255, 0), (81, 255, 0), (0, 255, 21), (0, 255, 106), (0, 255, 179), (0, 255, 234), (0, 191, 255), \
+            (0, 98, 255), (8, 0, 255), (76, 0, 255), (111, 0, 255), (166, 0, 255), (230, 0, 255), (255, 0, 144), \
+            (217, 121, 217), (121, 124, 217), (121, 217, 132), (133, 4, 25), (15, 19, 99), (15, 99, 77), \
+            (238, 129, 240)
             ]
         j=0
         for i in range(len(allowed_moves)):
@@ -523,8 +526,11 @@ def draw_allowed_moves():
                 
         
     if turn == 'black':
-        colors = [(94, 14, 232), (39, 209, 17), (230, 119, 9), (219, 230, 9), (13, 230, 9), (9, 230, 120), \
-            (9, 230, 178), (8, 105, 209), (5, 20, 237), (112, 4, 207), (181, 12, 232), (212, 6, 177)
+        colors = [(255, 42, 0), (255, 102, 0), (255, 153, 0), (255, 217, 0), (229, 255, 0), (191, 255, 0), \
+            (153, 255, 0), (81, 255, 0), (0, 255, 21), (0, 255, 106), (0, 255, 179), (0, 255, 234), (0, 191, 255), \
+            (0, 98, 255), (8, 0, 255), (76, 0, 255), (111, 0, 255), (166, 0, 255), (230, 0, 255), (255, 0, 144), \
+            (217, 121, 217), (121, 124, 217), (121, 217, 132), (133, 4, 25), (15, 19, 99), (15, 99, 77), \
+            (238, 129, 240)
             ]
         j=0
         for i in range(len(allowed_moves)):
@@ -1138,6 +1144,34 @@ def check_king_check():
 
 
 
+def undoaction():
+    global turn
+    movement = log_list.pop()
+    redo_list.push(movement)
+
+    if movement.piece_color == "white":
+        index = white_locations.index(movement.destination)
+        white_locations[index] = movement.start
+        if len(movement.lost_piece)!=0:
+            black_pieces.append(movement.lost_piece[0])
+            black_locations.append(movement.lost_piece[1])
+            lost_pieces_black.remove(movement.lost_piece)
+        turn = movement.piece_color
+        
+        
+
+    else:
+        index = black_locations.index(movement.destination)
+        black_locations[index] = movement.start
+        if len(movement.lost_piece)!=0:
+            white_pieces.append(movement.lost_piece[0])
+            white_locations.append(movement.lost_piece[1])
+            lost_pieces_white.remove(movement.lost_piece)
+        turn = movement.piece_color
+
+
+
+
 
 white_win = False
 black_win = False
@@ -1189,6 +1223,7 @@ while running and black_win == False  and  white_win == False:
         py.draw.rect(screen, 'gold', (200, 0, 560, 60))
     
 
+    #draws and limits allowed_moves
     if selected_piece[0] != -1:
         
         if white_check:
@@ -1226,8 +1261,6 @@ while running and black_win == False  and  white_win == False:
             
             allowed_moves = allowed_moves2
         
-
-
         elif black_check:
             allowed_moves2 = allowed_moves
             for i in allowed_moves2:
@@ -1262,16 +1295,8 @@ while running and black_win == False  and  white_win == False:
                     black_locations[index] = previous_location
             
             allowed_moves = allowed_moves2
-        
-
-
         ##############################################################################
-        
-        
         else:
-            
-
-
             if turn == "white":
                 allowed_moves2 = allowed_moves
                 for i in allowed_moves2:
@@ -1290,8 +1315,7 @@ while running and black_win == False  and  white_win == False:
                         
                         black_locations.append(lost_piece_location)
                         black_pieces.append(lost_piece_name)
-                        
-                        
+                          
                     else:
                         white_total_moves = []
                         black_total_moves = []
@@ -1309,9 +1333,6 @@ while running and black_win == False  and  white_win == False:
                 
                 allowed_moves = allowed_moves2
         
-
-
-
             elif turn == "black":
                 allowed_moves2 = allowed_moves
                 for i in allowed_moves2:
@@ -1348,7 +1369,6 @@ while running and black_win == False  and  white_win == False:
                 allowed_moves = allowed_moves2
         
 
-
         draw_allowed_moves()
     
 
@@ -1371,13 +1391,19 @@ while running and black_win == False  and  white_win == False:
             select_x = (event.pos[0] - 200) // 70
             select_y = (event.pos[1] - 70) // 70
             selected_coords = (select_x, select_y)
+
+            if selected_coords == (11, 6) or selected_coords == (12, 6):
+                undoaction()
+            
             
 
             if (turn == "white"):
+
                 if selected_coords == (11,0) or selected_coords == (12,0):
                     result = messagebox.askyesno("Surrender", "Are you sure?\nYou will lose the game")
                     if result:
                         black_win = True
+
                 if (selected_coords in white_locations):
                     allowed_moves = []
                     index = white_locations.index(selected_coords)
@@ -1394,14 +1420,12 @@ while running and black_win == False  and  white_win == False:
                 
 
                 if selected_coords in allowed_moves:
+                    redo_list.clearStack()
                     
                     if selected_coords in black_locations:
                         white_total_moves = []
                         black_total_moves = []
-                        white_locations[index] = selected_coords
-                        if white_pieces[index] == 'king':
-                            white_king_location = white_locations[index]
-                        allowed_moves = []
+
 
                         index2 = black_locations.index(selected_coords)
                         lost_piece_location = black_locations.pop(index2)
@@ -1409,31 +1433,42 @@ while running and black_win == False  and  white_win == False:
                         lost_piece = [lost_piece_name, lost_piece_location]
                         lost_pieces_black.append(lost_piece)
 
+
+                        movement = Log(white_pieces[index], "white", white_locations[index], selected_coords, lost_piece)
+                        log_list.push(movement)
+
+                        white_locations[index] = selected_coords
+                        if white_pieces[index] == 'king':
+                            white_king_location = white_locations[index]
+                        allowed_moves = []
+
+
                         selected_piece = [-1, '']
                         
-                        movement = Log(index, "white", white_pieces[index], white_locations[index], selected_coords, index2)
-                        log.push(movement)
+                        
                         white_locations[index] = selected_coords
                         turn = 'black'
                         check_counter = 8
                     else:                                                                          
                         white_total_moves = []
                         black_total_moves = []
+
+                        movement = Log(white_pieces[index], "white", white_locations[index], selected_coords, [])
+                        log_list.push(movement)
+
                         white_locations[index] = selected_coords
                         if white_pieces[index] == 'king':
                             white_king_location = white_locations[index]
                         allowed_moves = []
                         selected_piece = [-1, '']
                         
-                        movement = Log(index, "white", white_pieces[index], white_locations[index], selected_coords, -1)
-                        log.push(movement)
                         selected_piece = [-1, '']
                         turn = 'black'
                         check_counter = 8
 
             
             if (turn == "black"):
-                if selected_coords == (11,2):
+                if selected_coords == (11,0) or selected_coords == (12,0):
                     result = messagebox.askyesno("Surrender", "Are you sure?\nYou will lose the game")
                     if result:
                         white_win = True
@@ -1450,14 +1485,11 @@ while running and black_win == False  and  white_win == False:
                     alter = selected_piece
 
                 if selected_coords in allowed_moves:
+                    redo_list.clearStack()
                     
                     if selected_coords in white_locations:
                         black_total_moves = []
                         white_total_moves = []
-                        black_locations[index] = selected_coords
-                        if black_pieces[index] == 'king':
-                            black_king_location = black_locations[index]
-                        allowed_moves = []
 
                         index2 = white_locations.index(selected_coords)
                         lost_piece_location = white_locations.pop(index2)
@@ -1465,16 +1497,27 @@ while running and black_win == False  and  white_win == False:
                         lost_piece = [lost_piece_name, lost_piece_location]                        
                         lost_pieces_white.append(lost_piece)
 
+                        movement = Log(black_pieces[index], "black", black_locations[index], selected_coords, lost_piece)
+                        log_list.push(movement)
+
+                        black_locations[index] = selected_coords
+                        if black_pieces[index] == 'king':
+                            black_king_location = black_locations[index]
+                        allowed_moves = []
+
+
                         selected_piece = [-1, '']
 
-                        movement = Log(index, "black", black_pieces[index], black_locations[index], selected_coords, index2)
-                        log.push(movement)
                         black_locations[index] = selected_coords
                         turn = 'white'
                         check_counter = 8
                     else:                                                                            
                         black_total_moves = []
                         white_total_moves = []
+
+                        movement = Log(black_pieces[index], "black", black_locations[index], selected_coords, [])
+                        log_list.push(movement)
+
                         black_locations[index] = selected_coords
                         if black_pieces[index] == 'king':
                             black_king_location = black_locations[index]
@@ -1482,8 +1525,7 @@ while running and black_win == False  and  white_win == False:
                         selected_piece = [-1, '']
                         
                         
-                        movement = Log(index, "black", black_pieces[index], black_locations[index], selected_coords, -1)
-                        log.push(movement)
+                        
                         selected_piece = [-1, '']
                         turn = 'white'
                         check_counter = 8
@@ -1527,9 +1569,5 @@ if (white_win==True or black_win==True):
                     running = False
 
         py.display.flip()
-
-
-
-
 
 py.quit()
