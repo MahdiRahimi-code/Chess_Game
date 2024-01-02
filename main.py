@@ -1069,6 +1069,7 @@ def check_total_moves():
 
 
 
+
 def draw_check():
     global last_flash_time, flash_interval ,current_color , color1 , color2
     
@@ -1144,63 +1145,212 @@ def check_king_check():
 
 
 def undoaction():
-    global turn
-    
+    global turn, timerx, white_king_moves, black_king_moves, left_white_rook_moves, right_white_rook_moves,\
+    left_black_rook_moves, right_black_rook_moves
+    timerx = 0
+
     movement = log_list.pop()
     redo_list.push(movement)
 
     if movement.piece_color == "white":
-        index = white_locations.index(movement.destination)
-        white_locations[index] = movement.start
-        if len(movement.lost_piece)!=0:
-            black_pieces.append(movement.lost_piece[0])
-            black_locations.append(movement.lost_piece[1])
-            lost_pieces_black.remove(movement.lost_piece)
-        turn = movement.piece_color
+        #action for check castling function
+        if (movement.piece_name=="king" and movement.start==(4,7) and movement.destination==(2,7)):
+            white_king_location=(4,7)
+            white_locations[white_locations.index((2,7))]=(4,7)
+            white_locations[white_locations.index((3,7))]=(0,7)
+            turn = movement.piece_color
+        elif (movement.piece_name=="king" and movement.start==(4,7) and movement.destination==(6,7)):
+            white_king_location=(4,7)
+            white_locations[white_locations.index((6,7))]=(4,7)
+            white_locations[white_locations.index((5,7))]=(7,7)
+            turn = movement.piece_color
+        else:
+            index = white_locations.index(movement.destination)
+            white_locations[index] = movement.start
+            if len(movement.lost_piece)!=0:
+                black_pieces.append(movement.lost_piece[0])
+                black_locations.append(movement.lost_piece[1])
+                lost_pieces_black.remove(movement.lost_piece)
+            turn = movement.piece_color
         
+        if (movement.piece_name=="king" and movement.start==(4,7)):
+            white_king_moves-=1
         
-
+        if movement.piece_name=="rook" and movement.start==(0,7):
+            left_white_rook_moves -= 1
+        elif movement.piece_name=="rook" and movement.start==(7,7):
+            right_white_rook_moves -= 1
+        
     else:
-        index = black_locations.index(movement.destination)
-        black_locations[index] = movement.start
-        if len(movement.lost_piece)!=0:
-            white_pieces.append(movement.lost_piece[0])
-            white_locations.append(movement.lost_piece[1])
-            lost_pieces_white.remove(movement.lost_piece)
-        turn = movement.piece_color
+        #action for check castling function
+        if (movement.piece_name=="king" and movement.start==(4,0) and movement.destination==(2,0)):
+            black_king_location=(4,0)
+            black_locations[black_locations.index((2,0))]=(4,0)
+            black_locations[black_locations.index((3,0))]=(0,0)
+            turn = movement.piece_color
+        elif (movement.piece_name=="king" and movement.start==(4,0) and movement.destination==(6,0)):
+            black_king_location=(4,0)
+            black_locations[black_locations.index((6,0))]=(4,0)
+            black_locations[black_locations.index((5,0))]=(7,0)
+            turn = movement.piece_color
+        else:
+            index = black_locations.index(movement.destination)
+            black_locations[index] = movement.start
+            if len(movement.lost_piece)!=0:
+                white_pieces.append(movement.lost_piece[0])
+                white_locations.append(movement.lost_piece[1])
+                lost_pieces_white.remove(movement.lost_piece)
+            turn = movement.piece_color
+        
+        if (movement.piece_name=="king" and movement.start==(4,0)):
+            black_king_moves-=1
+
+        if movement.piece_name=="rook" and movement.start==(0,0):
+            left_black_rook_moves -= 1
+        elif movement.piece_name=="rook" and movement.start==(7,0):
+            right_black_rook_moves -= 1
 
 
 
 def redoaction():
-    global turn
+    global turn, timerx, white_king_moves, black_king_moves, left_white_rook_moves, right_white_rook_moves,\
+    left_black_rook_moves, right_black_rook_moves
+    timerx=0
 
     movement = redo_list.pop()
     log_list.push(movement)
 
     if movement.piece_color == "white":
-        index = white_locations.index(movement.start)
-        white_locations[index] = movement.destination
-        if len(movement.lost_piece)!=0:
-            lost_piece = [-1, -1]
-            index2 = black_locations.index(movement.destination)
-            lost_piece[0] = black_pieces.pop(index2)
-            lost_piece[1] = black_locations.pop(index2)
-            lost_pieces_black.append(lost_piece)
-        turn = "black"
+        #action for check castling function
+        if (movement.piece_name=="king" and movement.start==(4,7) and movement.destination==(2,7)):
+            white_king_location=(2,7)
+            white_locations[white_locations.index((4,7))]=(2,7)
+            white_locations[white_locations.index((0,7))]=(3,7)
+            turn = "black"
+        elif (movement.piece_name=="king" and movement.start==(4,7) and movement.destination==(6,7)):
+            white_king_location=(6,7)
+            white_locations[white_locations.index((4,7))]=(6,7)
+            white_locations[white_locations.index((7,7))]=(5,7)
+            turn = "black"
+        else:
+            index = white_locations.index(movement.start)
+            white_locations[index] = movement.destination
+            if len(movement.lost_piece)!=0:
+                lost_piece = [-1, -1]
+                index2 = black_locations.index(movement.destination)
+                lost_piece[0] = black_pieces.pop(index2)
+                lost_piece[1] = black_locations.pop(index2)
+                lost_pieces_black.append(lost_piece)
+            turn = "black"
+
+        if (movement.piece_name=="king"):
+            white_king_moves+=1
+        
+        if movement.piece_name=="castle" and movement.start==(0,7):
+            left_white_rook_moves += 1
+        elif movement.piece_name=="castle" and movement.start==(7,7):
+            right_white_rook_moves += 1
 
     else:
-        index = black_locations.index(movement.start)
-        black_locations[index] = movement.destination
-        if len(movement.lost_piece)!=0:
-            lost_piece = [-1, -1]
-            index2 = white_locations.index(movement.destination)
-            lost_piece[0] = white_pieces.pop(index2)
-            lost_piece[1] = white_locations.pop(index2)
-            lost_pieces_white.append(lost_piece)
-        turn = "white"   
+        #action for check castling function
+        if (movement.piece_name=="king" and movement.start==(4,0) and movement.destination==(2,0)):
+            black_king_location=(2,0)
+            black_locations[black_locations.index((4,0))]=(2,0)
+            black_locations[black_locations.index((0,0))]=(3,0)
+            turn = "white"
+        elif (movement.piece_name=="king" and movement.start==(4,0) and movement.destination==(6,0)):
+            black_king_location=(6,0)
+            black_locations[black_locations.index((4,0))]=(6,0)
+            black_locations[black_locations.index((7,0))]=(5,0)
+            turn = "white"
+        else:
+            index = black_locations.index(movement.start)
+            black_locations[index] = movement.destination
+            if len(movement.lost_piece)!=0:
+                lost_piece = [-1, -1]
+                index2 = white_locations.index(movement.destination)
+                lost_piece[0] = white_pieces.pop(index2)
+                lost_piece[1] = white_locations.pop(index2)
+                lost_pieces_white.append(lost_piece)
+            turn = "white"
+
+        if (movement.piece_name=="king"):
+            black_king_moves+=1   
+        
+        if movement.piece_name=="castle" and movement.start==(0,0):
+            left_black_rook_moves += 1
+        elif movement.piece_name=="castle" and movement.start==(7,0):
+            right_black_rook_moves += 1
 
 
 
+white_king_moves = 0
+black_king_moves = 0
+left_white_rook_moves = 0
+right_white_rook_moves = 0
+left_black_rook_moves = 0
+right_black_rook_moves = 0
+
+def check_castling():
+    global white_king_location, black_king_location
+    if (white_king_location==(4,7) and (1,7) not in white_locations and (2,7) not in white_locations and
+    (3,7) not in white_locations and white_pieces[white_locations.index((0, 7))]=="castle" and (not white_check)
+    and white_king_moves==0 and left_white_rook_moves==0):
+        if ((2,7) not in allowed_moves):
+            white_king_location = (2,7)
+            white_locations[white_locations.index((4,7))]=(2,7)
+            indexofrook = white_locations.index((0,7))
+            white_locations[indexofrook] = (3,7)
+            if not white_check:
+                allowed_moves.append((2, 7))
+            white_king_location = (4,7)
+            white_locations[white_locations.index((2,7))]=(4,7)
+            white_locations[indexofrook] = (0,7)
+
+        
+    if (white_king_location==(4,7) and (5,7) not in white_locations and (6,7) not in white_locations and
+    white_pieces[white_locations.index((7, 7))]=="castle" and (not white_check) and white_king_moves==0 and
+    right_white_rook_moves==0):
+        if (6,7) not in allowed_moves:
+            white_king_location = (6,7)
+            white_locations[white_locations.index((4,7))]=(6,7)
+            indexofrook = white_locations.index((7,7))
+            white_locations[indexofrook] = (5,7)
+            if not white_check:
+                allowed_moves.append((6, 7))
+            white_king_location = (4,7)
+            white_locations[white_locations.index((6,7))]=(4,7)
+            white_locations[indexofrook] = (7,7)
+    
+    if (black_king_location==(4,0) and (1,0) not in black_locations and (2,0) not in black_locations and
+    (3,0) not in black_locations and black_pieces[black_locations.index((0, 0))]=="castle" and (not black_check)
+    and black_king_moves==0 and left_black_rook_moves==0):
+        if (2,0) not in allowed_moves: 
+            black_king_location = (2,0)
+            black_locations[black_locations.index((4,0))]=(2,0)
+            indexofrook = black_locations.index((0,0))
+            black_locations[indexofrook] = (3,0)
+            if not black_check:
+                allowed_moves.append((2, 0))
+            black_king_location = (4,0)
+            black_locations[black_locations.index((2,0))]=(4,0)
+            black_locations[indexofrook] = (0,0)
+    
+    if (black_king_location==(4,0) and (5,0) not in black_locations and (6,0) not in black_locations and
+    black_pieces[black_locations.index((7, 0))]=="castle" and (not black_check) and black_king_moves==0 and
+    right_black_rook_moves==0):
+        if (6,0) not in allowed_moves:
+            black_king_location = (2,0)
+            black_locations[black_locations.index((4,0))]=(6,0)
+            indexofrook = black_locations.index((7,0))
+            black_locations[indexofrook] = (5,0)
+            if not black_check:
+                allowed_moves.append((6, 0))
+            black_king_location = (4,0)
+            black_locations[black_locations.index((6,0))]=(4,0)
+            black_locations[indexofrook] = (7,0)
+
+        
 
 
 white_win = False
@@ -1217,6 +1367,7 @@ selected_piece = [-1, '']
 
 # variable for disselecting piece
 alter = [-1 , -1]
+
 
 running = True
 white_check = False
@@ -1256,6 +1407,7 @@ while running and black_win == False  and  white_win == False:
             turn = "black"
         else:
             turn = "white"
+        selected_piece=[-1,'']
         timerx = 0
     
 
@@ -1428,7 +1580,6 @@ while running and black_win == False  and  white_win == False:
         draw_allowed_moves()
     
 
-    
     white_total_moves = []
     black_total_moves = []
     check_total_moves()
@@ -1450,13 +1601,11 @@ while running and black_win == False  and  white_win == False:
                 except Exception:
                     messagebox.showerror("Error", "No Moves made to Undo !")
                     
-            
             if selected_coords == (11, 3) or selected_coords == (12, 3):
                 try:
                     redoaction()
                 except Exception:
                     messagebox.showerror("Error", "No Undos made to Redo !")
-
 
             if (turn == "white"):
 
@@ -1474,6 +1623,10 @@ while running and black_win == False  and  white_win == False:
                         selected_piece = [-1, '']
                     
                     check_moves(selected_piece)
+
+                    # action for castling function
+                    if selected_piece[1]=="king":
+                        check_castling()
                     
                     
                     alter = selected_piece
@@ -1483,7 +1636,8 @@ while running and black_win == False  and  white_win == False:
                 if selected_coords in allowed_moves:
                     redo_list.clearStack()
                     timerx = 0
-                    
+
+
                     if selected_coords in black_locations:
                         white_total_moves = []
                         black_total_moves = []
@@ -1510,23 +1664,52 @@ while running and black_win == False  and  white_win == False:
                         
                         white_locations[index] = selected_coords
                         turn = 'black'
-                        check_counter = 8
-                    else:                                                                          
-                        white_total_moves = []
-                        black_total_moves = []
-
-                        movement = Log(white_pieces[index], "white", white_locations[index], selected_coords, [])
-                        log_list.push(movement)
-
-                        white_locations[index] = selected_coords
-                        if white_pieces[index] == 'king':
-                            white_king_location = white_locations[index]
-                        allowed_moves = []
-                        selected_piece = [-1, '']
+                    
+                    else:
+                        #action for check castling function
+                        if selected_piece[1]=="rook" and white_locations[selected_piece[0]]==(0,7):
+                            left_white_rook_moves += 1
+                        if selected_piece[1]=="rook" and white_locations[selected_piece[0]]==(7,7):
+                            right_white_rook_moves += 1
+                        if selected_piece[1]=="king" and white_locations[selected_piece[0]]==(4,7):
+                            white_king_moves += 1
                         
-                        selected_piece = [-1, '']
-                        turn = 'black'
-                        check_counter = 8
+
+                        # action for castling function
+                        if (white_locations[selected_piece[0]]==(4,7) and selected_piece[1]=="king" and
+                        (selected_coords==(2,7) or selected_coords==(6,7))):
+                            if selected_coords == (2,7):
+                                white_king_location=(2,7)
+                                white_locations[white_locations.index((4,7))]=(2,7)
+                                white_locations[white_locations.index((0,7))]=(3,7)
+                            elif selected_coords == (6,7):
+                                white_king_location=(6,7)
+                                white_locations[white_locations.index((4,7))]=(6,7)
+                                white_locations[white_locations.index((7,7))]=(5,7)
+                            
+                            movement = Log("king", "white", (4,7), selected_coords, [])
+                            log_list.push(movement)
+
+                            allowed_moves = []
+                            selected_piece = [-1, '']
+                            turn = 'black'
+                       
+                        else:
+                            white_total_moves = []
+                            black_total_moves = []
+
+                            movement = Log(white_pieces[index], "white", white_locations[index], selected_coords, [])
+                            log_list.push(movement)
+
+                            white_locations[index] = selected_coords
+                            if white_pieces[index] == 'king':
+                                white_king_location = white_locations[index]
+                            allowed_moves = []
+                            
+                            
+                            selected_piece = [-1, '']
+                            turn = 'black'
+                        
 
             
             if (turn == "black"):
@@ -1544,12 +1727,16 @@ while running and black_win == False  and  white_win == False:
 
                     check_moves(selected_piece)
 
+                    if selected_piece[1] == "king":
+                        check_castling()
+
                     alter = selected_piece
 
                 if selected_coords in allowed_moves:
                     redo_list.clearStack()
                     timerx = 0
-                    
+
+
                     if selected_coords in white_locations:
                         black_total_moves = []
                         white_total_moves = []
@@ -1573,25 +1760,55 @@ while running and black_win == False  and  white_win == False:
 
                         black_locations[index] = selected_coords
                         turn = 'white'
-                        check_counter = 8
-                    else:                                                                            
-                        black_total_moves = []
-                        white_total_moves = []
 
-                        movement = Log(black_pieces[index], "black", black_locations[index], selected_coords, [])
-                        log_list.push(movement)
 
-                        black_locations[index] = selected_coords
-                        if black_pieces[index] == 'king':
-                            black_king_location = black_locations[index]
-                        allowed_moves = []
-                        selected_piece = [-1, '']
+                    else:
+                        #action for check castling function
+                        if selected_piece[1]=="rook" and black_locations[selected_piece[0]]==(0,0):
+                            left_black_rook_moves += 1
+                        if selected_piece[1]=="rook" and black_locations[selected_piece[0]]==(7,0):
+                            right_black_rook_moves += 1
+                        if selected_piece[1]=="king" and black_locations[selected_piece[0]]==(4,0):
+                            black_king_moves += 1 
+
+
+                        # action for castling function
+                        if (black_locations[selected_piece[0]]==(4,0) and selected_piece[1]=="king" 
+                        and (selected_coords==(2,0) or selected_coords==(6,0))):
+                            if selected_coords == (2,0):
+                                black_king_location=(2,0)
+                                black_locations[black_locations.index((4,0))]=(2,0)
+                                black_locations[black_locations.index((0,0))]=(3,0)
+                            elif selected_coords == (6,0):
+                                black_king_location=(6,0)
+                                black_locations[black_locations.index((4,0))]=(6,0)
+                                black_locations[black_locations.index((7,0))]=(5,0)
+                            
+                            movement = Log("king", "black", (4,0), selected_coords, [])
+                            log_list.push(movement)
+
+                            allowed_moves = []
+                            selected_piece = [-1, '']
+                            turn = 'white'
+
+                        else:
+                            black_total_moves = []
+                            white_total_moves = []
+
+                            movement = Log(black_pieces[index], "black", black_locations[index], selected_coords, [])
+                            log_list.push(movement)
+
+                            black_locations[index] = selected_coords
+                            if black_pieces[index] == 'king':
+                                black_king_location = black_locations[index]
+                            allowed_moves = []
+                            selected_piece = [-1, '']
+                            
+                            
+                            
+                            selected_piece = [-1, '']
+                            turn = 'white'
                         
-                        
-                        
-                        selected_piece = [-1, '']
-                        turn = 'white'
-                        check_counter = 8
                 
     clock.tick(30)
     py.display.flip()
@@ -1635,3 +1852,5 @@ if (white_win==True or black_win==True):
         py.display.flip()
 
 py.quit()
+print(white_king_moves)
+print(right_black_rook_moves)
