@@ -144,7 +144,6 @@ def load_images():
 
 
 
-
 def draw_pieces():
     for i in range(len(white_pieces)):
         if white_pieces[i] == 'soldier':
@@ -1225,11 +1224,17 @@ black_check = False
 
 
 
+clock = py.time.Clock()
+start_time = time.time()
+elapsed_time = 0
+
+
+timerx = 0  # Initial timer value in seconds
+MAX_TIMER = 31  # Maximum time allowed for a turn in seconds
+
+
 while running and black_win == False  and  white_win == False:
     #text for check
-    text_surface = new_font.render("you are check _ " + str(check_counter), True, "white", "black")
-    textrect = text_surface.get_rect()
-    textrect.center = (480, 40)
     timer.tick(30)
     screen.fill((115, 73, 31))
     create_board()
@@ -1239,12 +1244,32 @@ while running and black_win == False  and  white_win == False:
     draw_lost_pieces()
     check_total_moves()
     check_king_check()
+
+
+    # Update the timer
+    timerx += clock.get_time() / 1000   # Convert milliseconds to seconds
+
+    # Check if the timer has exceeded the maximum time for a turn
+    if timerx > MAX_TIMER:
+        # Switch turn and reset the timer
+        if turn == "white":
+            turn = "black"
+        else:
+            turn = "white"
+        timerx = 0
     
 
-    
-    if (white_check == True) and check_counter == 0:
-        black_win = True
-    if (black_check == True) and check_counter == 0:
+    # Render the time as text
+    time_text = font.render(f"Time: {int(MAX_TIMER - timerx)}", True, (255, 255, 255))  # Convert timer to countdown
+
+    # Blit the time onto the screen
+    screen.blit(time_text, (985, 10))  # Adjust the position as needed
+
+
+    if (white_check == True):
+        if turn == "black":
+            black_win = True
+    if (black_check == True):
         white_win = True
 
 
@@ -1410,10 +1435,6 @@ while running and black_win == False  and  white_win == False:
     check_king_check()
 
 
-    # blit the text to show you are check
-    if (black_check == True and selected_piece == [-1, '']) or (white_check == True and selected_piece == [-1, '']):
-        screen.blit(text_surface, textrect)
-
     for event in py.event.get():
         if event.type == py.QUIT:
             running = False
@@ -1461,6 +1482,7 @@ while running and black_win == False  and  white_win == False:
 
                 if selected_coords in allowed_moves:
                     redo_list.clearStack()
+                    timerx = 0
                     
                     if selected_coords in black_locations:
                         white_total_moves = []
@@ -1526,6 +1548,7 @@ while running and black_win == False  and  white_win == False:
 
                 if selected_coords in allowed_moves:
                     redo_list.clearStack()
+                    timerx = 0
                     
                     if selected_coords in white_locations:
                         black_total_moves = []
@@ -1570,6 +1593,7 @@ while running and black_win == False  and  white_win == False:
                         turn = 'white'
                         check_counter = 8
                 
+    clock.tick(30)
     py.display.flip()
 
 
