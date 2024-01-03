@@ -1,0 +1,2 @@
+_______ Chess Log List : _______
+format : pieceColor_pieceName_Start_Destination_lostPieceName(*)_castling(l/r/#)_enPassat(!)

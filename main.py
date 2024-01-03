@@ -1473,6 +1473,7 @@ elapsed_time = 0
 
 timerx = 0  # Initial timer value in seconds
 MAX_TIMER = 31  # Maximum time allowed for a turn in seconds
+f = open("C:\\Users\\AceR\\Desktop\\python\\Chess\\log.txt", "a")
 
 
 while running and black_win == False  and  white_win == False:
@@ -1734,6 +1735,9 @@ while running and black_win == False  and  white_win == False:
 
                         movement = Log(white_pieces[index], "white", white_locations[index], selected_coords, lost_piece)
                         log_list.push(movement)
+                        f.write("\n"+movement.piece_color+"_"+movement.piece_name+"_("+str(movement.start[0])+","+
+                        str(movement.start[1])+")_("+str(movement.destination[0])+","+str(movement.destination[1])+
+                        ")_"+movement.lost_piece[0]+"_#_!")
 
                         white_locations[index] = selected_coords
                         if white_pieces[index] == 'king':
@@ -1767,13 +1771,21 @@ while running and black_win == False  and  white_win == False:
                                 white_king_location=(2,7)
                                 white_locations[white_locations.index((4,7))]=(2,7)
                                 white_locations[white_locations.index((0,7))]=(3,7)
+                                movement = Log("king", "white", (4,7), selected_coords, [])
+                                log_list.push(movement)
+                                f.write("\n"+movement.piece_color+"_"+movement.piece_name+"_("+str(movement.start[0])+","+
+                                str(movement.start[1])+")_("+str(movement.destination[0])+","+str(movement.destination[1])+
+                                ")_*_l_!")
                             elif selected_coords == (6,7):
                                 white_king_location=(6,7)
                                 white_locations[white_locations.index((4,7))]=(6,7)
                                 white_locations[white_locations.index((7,7))]=(5,7)
+                                movement = Log("king", "white", (4,7), selected_coords, [])
+                                log_list.push(movement)
+                                f.write("\n"+movement.piece_color+"_"+movement.piece_name+"_("+str(movement.start[0])+","+
+                                str(movement.start[1])+")_("+str(movement.destination[0])+","+str(movement.destination[1])+
+                                ")_*_r_!")
                             
-                            movement = Log("king", "white", (4,7), selected_coords, [])
-                            log_list.push(movement)
 
                             allowed_moves = []
                             selected_piece = [-1, '']
@@ -1793,6 +1805,11 @@ while running and black_win == False  and  white_win == False:
 
                             movement = Log(white_pieces[index], "white", white_locations[index], selected_coords, lost_piece)
                             log_list.push(movement)
+                            f.write("\n"+movement.piece_color+"_"+movement.piece_name+"_("+str(movement.start[0])+","+
+                            str(movement.start[1])+")_("+str(movement.destination[0])+","+str(movement.destination[1])+
+                            ")_soldier_#_("+str(movement.lost_piece[1][0])+","+str(movement.lost_piece[1][1])+")")
+
+
                             white_total_moves = []
                             black_total_moves = []
                             allowed_moves = []
@@ -1811,6 +1828,11 @@ while running and black_win == False  and  white_win == False:
 
                             movement = Log(white_pieces[index], "white", white_locations[index], selected_coords, lost_piece)
                             log_list.push(movement)
+                            f.write("\n"+movement.piece_color+"_"+movement.piece_name+"_("+str(movement.start[0])+","+
+                            str(movement.start[1])+")_("+str(movement.destination[0])+","+str(movement.destination[1])+
+                            ")_soldier_#_("+str(movement.lost_piece[1][0])+","+str(movement.lost_piece[1][1])+")")
+
+
                             white_total_moves = []
                             black_total_moves = []
                             allowed_moves = []
@@ -1825,6 +1847,10 @@ while running and black_win == False  and  white_win == False:
 
                             movement = Log(white_pieces[index], "white", white_locations[index], selected_coords, [])
                             log_list.push(movement)
+                            f.write("\n"+movement.piece_color+"_"+movement.piece_name+"_("+str(movement.start[0])+","+
+                                str(movement.start[1])+")_("+str(movement.destination[0])+","+str(movement.destination[1])+
+                                ")_*_#_!")
+
 
                             white_locations[index] = selected_coords
                             if white_pieces[index] == 'king':
@@ -1874,6 +1900,10 @@ while running and black_win == False  and  white_win == False:
 
                         movement = Log(black_pieces[index], "black", black_locations[index], selected_coords, lost_piece)
                         log_list.push(movement)
+                        f.write("\n"+movement.piece_color+"_"+movement.piece_name+"_("+str(movement.start[0])+","+
+                        str(movement.start[1])+")_("+str(movement.destination[0])+","+str(movement.destination[1])+
+                        ")_"+movement.lost_piece[0]+"_#_!")
+
 
                         black_locations[index] = selected_coords
                         if black_pieces[index] == 'king':
@@ -1904,13 +1934,21 @@ while running and black_win == False  and  white_win == False:
                                 black_king_location=(2,0)
                                 black_locations[black_locations.index((4,0))]=(2,0)
                                 black_locations[black_locations.index((0,0))]=(3,0)
+                                movement = Log("king", "black", (4,0), selected_coords, [])
+                                log_list.push(movement)
+                                f.write("\n"+movement.piece_color+"_"+movement.piece_name+"_("+str(movement.start[0])+","+
+                                str(movement.start[1])+")_("+str(movement.destination[0])+","+str(movement.destination[1])+
+                                ")_*_l_!")
                             elif selected_coords == (6,0):
                                 black_king_location=(6,0)
                                 black_locations[black_locations.index((4,0))]=(6,0)
                                 black_locations[black_locations.index((7,0))]=(5,0)
-                            
-                            movement = Log("king", "black", (4,0), selected_coords, [])
-                            log_list.push(movement)
+                                movement = Log("king", "black", (4,0), selected_coords, [])
+                                log_list.push(movement)
+                                f.write("\n"+movement.piece_color+"_"+movement.piece_name+"_("+str(movement.start[0])+","+
+                                str(movement.start[1])+")_("+str(movement.destination[0])+","+str(movement.destination[1])+
+                                ")_*_r_!")
+
 
                             allowed_moves = []
                             selected_piece = [-1, '']
@@ -1930,6 +1968,11 @@ while running and black_win == False  and  white_win == False:
 
                             movement = Log(black_pieces[index], "black", black_locations[index], selected_coords, lost_piece)
                             log_list.push(movement)
+                            f.write("\n"+movement.piece_color+"_"+movement.piece_name+"_("+str(movement.start[0])+","+
+                            str(movement.start[1])+")_("+str(movement.destination[0])+","+str(movement.destination[1])+
+                            ")_soldier_#_("+str(movement.lost_piece[1][0])+","+str(movement.lost_piece[1][1])+")")
+
+
                             white_total_moves = []
                             black_total_moves = []
                             allowed_moves = []
@@ -1948,6 +1991,11 @@ while running and black_win == False  and  white_win == False:
 
                             movement = Log(black_pieces[index], "black", black_locations[index], selected_coords, lost_piece)
                             log_list.push(movement)
+                            f.write("\n"+movement.piece_color+"_"+movement.piece_name+"_("+str(movement.start[0])+","+
+                            str(movement.start[1])+")_("+str(movement.destination[0])+","+str(movement.destination[1])+
+                            ")_soldier_#_("+str(movement.lost_piece[1][0])+","+str(movement.lost_piece[1][1])+")")
+
+
                             white_total_moves = []
                             black_total_moves = []
                             allowed_moves = []
@@ -1962,6 +2010,9 @@ while running and black_win == False  and  white_win == False:
 
                             movement = Log(black_pieces[index], "black", black_locations[index], selected_coords, [])
                             log_list.push(movement)
+                            f.write("\n"+movement.piece_color+"_"+movement.piece_name+"_("+str(movement.start[0])+","+
+                                str(movement.start[1])+")_("+str(movement.destination[0])+","+str(movement.destination[1])+
+                                ")_*_#_!")
 
                             black_locations[index] = selected_coords
                             if black_pieces[index] == 'king':
@@ -1977,6 +2028,8 @@ while running and black_win == False  and  white_win == False:
                 
     clock.tick(30)
     py.display.flip()
+
+f.close()
 
 
 
