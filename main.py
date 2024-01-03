@@ -244,6 +244,28 @@ def check_soldier_moves(selected):
                     allowed_moves.append((location[0]+1, location[1]-1))
                 if (location[0]-1, location[1]-1) in enemies and (location[0]-1, location[1]-1) not in allowed_moves:
                     allowed_moves.append((location[0]-1, location[1]-1))
+        
+        # en_passant
+        if( (location[0]-1, location[1]) in enemies ):
+            if black_pieces[black_locations.index((location[0]-1, location[1]))]=="soldier":
+                for i in log_list.stack:
+                    if( (i.piece_name == "soldier") and (i.destination[1] - i.start[1]) == 2):
+                        element1 = log_list.pop()
+                        element2 = log_list.pop()
+                        if element2.piece_name == "soldier" and element2.destination == location:
+                            allowed_moves.append((location[0]-1, location[1]-1))
+                        log_list.push(element2)
+                        log_list.push(element1)
+        if( (location[0]+1, location[1]) in enemies ):
+            if black_pieces[black_locations.index((location[0]+1, location[1]))]=="soldier":
+                for i in log_list.stack:
+                    if( (i.piece_name == "soldier") and (i.destination[1] - i.start[1]) == 2):
+                        element1 = log_list.pop()
+                        element2 = log_list.pop()
+                        if element2.piece_name == "soldier" and element2.destination == location:
+                            allowed_moves.append((location[0]+1, location[1]-1))
+                        log_list.push(element2)
+                        log_list.push(element1)
     
     elif turn == 'black':
         enemies = white_locations
@@ -271,6 +293,28 @@ def check_soldier_moves(selected):
                     allowed_moves.append((location[0]-1, location[1]+1))
                 if (location[0]+1, location[1]+1) in enemies and (location[0]+1, location[1]+1) not in allowed_moves:
                     allowed_moves.append((location[0]+1, location[1]+1))
+
+        # en_passant
+        if( (location[0]-1, location[1]) in enemies):
+            if white_pieces[white_locations.index((location[0]-1, location[1]))]=="soldier":
+                for i in log_list.stack:
+                    if( (i.piece_name == "soldier") and (i.destination[1] - i.start[1]) == 2):
+                        element1 = log_list.pop()
+                        element2 = log_list.pop()
+                        if element2.piece_name == "soldier" and element2.destination == location:
+                            allowed_moves.append((location[0]-1, location[1]+1))
+                        log_list.push(element2)
+                        log_list.push(element1)
+        if( (location[0]+1, location[1]) in enemies ):
+            if white_pieces[white_locations.index((location[0]+1, location[1]))]=="soldier":
+                for i in log_list.stack:
+                    if( (i.piece_name == "soldier") and (i.destination[1] - i.start[1]) == 2):
+                        element1 = log_list.pop()
+                        element2 = log_list.pop()
+                        if element2.piece_name == "soldier" and element2.destination == location:
+                            allowed_moves.append((location[0]+1, location[1]+1))
+                        log_list.push(element2)
+                        log_list.push(element1)
 
 
 
@@ -1180,7 +1224,8 @@ def undoaction():
             left_white_rook_moves -= 1
         elif movement.piece_name=="rook" and movement.start==(7,7):
             right_white_rook_moves -= 1
-        
+
+
     else:
         #action for check castling function
         if (movement.piece_name=="king" and movement.start==(4,0) and movement.destination==(2,0)):
@@ -1210,7 +1255,7 @@ def undoaction():
         elif movement.piece_name=="rook" and movement.start==(7,0):
             right_black_rook_moves -= 1
 
-
+        
 
 def redoaction():
     global turn, timerx, white_king_moves, black_king_moves, left_white_rook_moves, right_white_rook_moves,\
@@ -1232,6 +1277,28 @@ def redoaction():
             white_locations[white_locations.index((4,7))]=(6,7)
             white_locations[white_locations.index((7,7))]=(5,7)
             turn = "black"
+
+        #en_passant
+        elif (movement.piece_name=="soldier" and movement.start[0]+1==movement.destination[0] and 
+        movement.start[1]-1==movement.destination[1]):  #ex: (3,4) -> (4,3)
+            index = white_locations.index(movement.start)
+            white_locations[index] = movement.destination
+            lost_piece = [-1, -1]
+            index2 = black_locations.index((movement.destination[0], movement.destination[1]+1))
+            lost_piece[0] = black_pieces.pop(index2)
+            lost_piece[1] = black_locations.pop(index2)
+            lost_pieces_black.append(lost_piece)
+        
+        elif (movement.piece_name=="soldier" and movement.start[0]-1==movement.destination[0] and 
+        movement.start[1]-1==movement.destination[1]):  #ex : (3,4) -> (2,3)
+            index = white_locations.index(movement.start)
+            white_locations[index] = movement.destination
+            lost_piece = [-1, -1]
+            index2 = black_locations.index((movement.destination[0], movement.destination[1]+1))
+            lost_piece[0] = black_pieces.pop(index2)
+            lost_piece[1] = black_locations.pop(index2)
+            lost_pieces_black.append(lost_piece)
+        
         else:
             index = white_locations.index(movement.start)
             white_locations[index] = movement.destination
@@ -1250,7 +1317,9 @@ def redoaction():
             left_white_rook_moves += 1
         elif movement.piece_name=="castle" and movement.start==(7,7):
             right_white_rook_moves += 1
-
+        
+        
+        
     else:
         #action for check castling function
         if (movement.piece_name=="king" and movement.start==(4,0) and movement.destination==(2,0)):
@@ -1263,6 +1332,27 @@ def redoaction():
             black_locations[black_locations.index((4,0))]=(6,0)
             black_locations[black_locations.index((7,0))]=(5,0)
             turn = "white"
+        #en_passant
+        elif (movement.piece_name=="soldier" and movement.start[0]+1==movement.destination[0] and 
+        movement.start[1]+1==movement.destination[1]):   # ex : (3,4) -> (4,5)
+            index = black_locations.index(movement.start)
+            black_locations[index] = movement.destination
+            lost_piece = [-1, -1]
+            index2 = white_locations.index((movement.destination[0], movement.destination[1]-1))
+            lost_piece[0] = white_pieces.pop(index2)
+            lost_piece[1] = white_locations.pop(index2)
+            lost_pieces_white.append(lost_piece)
+        
+        elif (movement.piece_name=="soldier" and movement.start[0]-1==movement.destination[0] and 
+        movement.start[1]+1==movement.destination[1]):   # ex : (3,4) -> (2,5)
+            index = black_locations.index(movement.start)
+            black_locations[index] = movement.destination
+            lost_piece = [-1, -1]
+            index2 = white_locations.index((movement.destination[0], movement.destination[1]-1))
+            lost_piece[0] = white_pieces.pop(index2)
+            lost_piece[1] = white_locations.pop(index2)
+            lost_pieces_white.append(lost_piece)
+
         else:
             index = black_locations.index(movement.start)
             black_locations[index] = movement.destination
@@ -1350,7 +1440,8 @@ def check_castling():
             black_locations[black_locations.index((6,0))]=(4,0)
             black_locations[indexofrook] = (7,0)
 
-        
+
+
 
 
 white_win = False
@@ -1404,11 +1495,9 @@ while running and black_win == False  and  white_win == False:
     if timerx > MAX_TIMER:
         # Switch turn and reset the timer
         if turn == "white":
-            turn = "black"
+            black_win = True
         else:
-            turn = "white"
-        selected_piece=[-1,'']
-        timerx = 0
+            white_win = True
     
 
     # Render the time as text
@@ -1416,13 +1505,6 @@ while running and black_win == False  and  white_win == False:
 
     # Blit the time onto the screen
     screen.blit(time_text, (985, 10))  # Adjust the position as needed
-
-
-    if (white_check == True):
-        if turn == "black":
-            black_win = True
-    if (black_check == True):
-        white_win = True
 
 
     if turn == "white":
@@ -1598,13 +1680,13 @@ while running and black_win == False  and  white_win == False:
             if selected_coords == (11, 6) or selected_coords == (12, 6):
                 try:
                     undoaction()
-                except Exception:
+                except AttributeError:
                     messagebox.showerror("Error", "No Moves made to Undo !")
                     
             if selected_coords == (11, 3) or selected_coords == (12, 3):
                 try:
                     redoaction()
-                except Exception:
+                except AttributeError:
                     messagebox.showerror("Error", "No Undos made to Redo !")
 
             if (turn == "white"):
@@ -1678,6 +1760,9 @@ while running and black_win == False  and  white_win == False:
                         # action for castling function
                         if (white_locations[selected_piece[0]]==(4,7) and selected_piece[1]=="king" and
                         (selected_coords==(2,7) or selected_coords==(6,7))):
+                            white_total_moves = []
+                            black_total_moves = []
+
                             if selected_coords == (2,7):
                                 white_king_location=(2,7)
                                 white_locations[white_locations.index((4,7))]=(2,7)
@@ -1693,7 +1778,47 @@ while running and black_win == False  and  white_win == False:
                             allowed_moves = []
                             selected_piece = [-1, '']
                             turn = 'black'
-                       
+                        
+
+                        #en_passant
+                        location = white_locations[selected_piece[0]]
+                        if (selected_piece[1]=="soldier" and selected_coords==(location[0]-1, location[1]-1) and
+                        selected_coords not in black_locations):
+
+                            index2 = black_locations.index((location[0]-1, location[1]))
+                            lost_piece_location = black_locations.pop(index2)
+                            lost_piece_name = black_pieces.pop(index2)
+                            lost_piece = [lost_piece_name, lost_piece_location]
+                            lost_pieces_black.append(lost_piece)
+
+                            movement = Log(white_pieces[index], "white", white_locations[index], selected_coords, lost_piece)
+                            log_list.push(movement)
+                            white_total_moves = []
+                            black_total_moves = []
+                            allowed_moves = []
+                            selected_piece = [-1, '']
+                            white_locations[index] = selected_coords
+                            turn = 'black'
+                        
+                        elif (selected_piece[1]=="soldier" and selected_coords==(location[0]+1, location[1]-1) and
+                        selected_coords not in black_locations):
+
+                            index2 = black_locations.index((location[0]+1, location[1]))
+                            lost_piece_location = black_locations.pop(index2)
+                            lost_piece_name = black_pieces.pop(index2)
+                            lost_piece = [lost_piece_name, lost_piece_location]
+                            lost_pieces_black.append(lost_piece)
+
+                            movement = Log(white_pieces[index], "white", white_locations[index], selected_coords, lost_piece)
+                            log_list.push(movement)
+                            white_total_moves = []
+                            black_total_moves = []
+                            allowed_moves = []
+                            selected_piece = [-1, '']
+                            white_locations[index] = selected_coords
+                            turn = 'black'
+
+
                         else:
                             white_total_moves = []
                             black_total_moves = []
@@ -1791,6 +1916,46 @@ while running and black_win == False  and  white_win == False:
                             selected_piece = [-1, '']
                             turn = 'white'
 
+
+                        #en_passant
+                        location = black_locations[selected_piece[0]]
+                        if (selected_piece[1]=="soldier" and selected_coords==(location[0]-1, location[1]+1) and
+                        selected_coords not in white_locations):
+
+                            index2 = white_locations.index((location[0]-1, location[1]))
+                            lost_piece_location = white_locations.pop(index2)
+                            lost_piece_name = white_pieces.pop(index2)
+                            lost_piece = [lost_piece_name, lost_piece_location]
+                            lost_pieces_white.append(lost_piece)
+
+                            movement = Log(black_pieces[index], "black", black_locations[index], selected_coords, lost_piece)
+                            log_list.push(movement)
+                            white_total_moves = []
+                            black_total_moves = []
+                            allowed_moves = []
+                            selected_piece = [-1, '']
+                            black_locations[index] = selected_coords
+                            turn = 'white'
+                        
+                        elif (selected_piece[1]=="soldier" and selected_coords==(location[0]+1, location[1]+1) and
+                        selected_coords not in white_locations):
+
+                            index2 = white_locations.index((location[0]+1, location[1]))
+                            lost_piece_location = white_locations.pop(index2)
+                            lost_piece_name = white_pieces.pop(index2)
+                            lost_piece = [lost_piece_name, lost_piece_location]
+                            lost_pieces_white.append(lost_piece)
+
+                            movement = Log(black_pieces[index], "black", black_locations[index], selected_coords, lost_piece)
+                            log_list.push(movement)
+                            white_total_moves = []
+                            black_total_moves = []
+                            allowed_moves = []
+                            selected_piece = [-1, '']
+                            black_locations[index] = selected_coords
+                            turn = 'white'
+
+
                         else:
                             black_total_moves = []
                             white_total_moves = []
@@ -1852,5 +2017,3 @@ if (white_win==True or black_win==True):
         py.display.flip()
 
 py.quit()
-print(white_king_moves)
-print(right_black_rook_moves)
