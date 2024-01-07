@@ -1,2 +1,9 @@
 _______ Chess Log List : _______
 format : pieceColor_pieceName_Start_Destination_lostPieceName(*)_castling(l/r/#)_enPassat(!)
+---------------->undo
+---------------->redo
+white_soldier_(3,6)_(3,5)_*_#_!
+---------------->undo
+---------------->redo
+---------------->undo
+---------------->redo

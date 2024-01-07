@@ -1,6 +1,5 @@
 import pygame as py
 import time
-import tkinter
 from tkinter import messagebox
 
 
@@ -890,26 +889,26 @@ def check_black_total():
             location = black_locations[selected[0]]
 
             if location[1] == 6:
-                if (location[0], location[1]-1) not in enemies and (location[0], location[1]-1) not in friends\
-                and (location[0], location[1]-1) not in black_total_moves:
-                    black_total_moves.append((location[0], location[1]-1))
-                if (location[0], location[1]-2) not in enemies and (location[0], location[1]-2) not in friends\
-                and (location[0], location[1]-2) not in black_total_moves:
-                    black_total_moves.append((location[0], location[1]-2))
-                if (location[0]+1, location[1]-1) in enemies and (location[0]+1, location[1]-1) not in black_total_moves:
-                    black_total_moves.append((location[0]+1, location[1]-1))
-                if (location[0]-1, location[1]-1) in enemies and (location[0]-1, location[1]-1) not in black_total_moves:
-                    black_total_moves.append((location[0]-1, location[1]-1))
+                if (location[0], location[1]+1) not in enemies and (location[0], location[1]+1) not in friends\
+                and (location[0], location[1]+1) not in black_total_moves:
+                    black_total_moves.append((location[0], location[1]+1))
+                if (location[0], location[1]+2) not in enemies and (location[0], location[1]+2) not in friends\
+                and (location[0], location[1]+2) not in black_total_moves:
+                    black_total_moves.append((location[0], location[1]+2))
+                if (location[0]+1, location[1]+1) in enemies and (location[0]+1, location[1]+1) not in black_total_moves:
+                    black_total_moves.append((location[0]+1, location[1]+1))
+                if (location[0]-1, location[1]+1) in enemies and (location[0]-1, location[1]+1) not in black_total_moves:
+                    black_total_moves.append((location[0]-1, location[1]+1))
                     
             else:
-                if (location[1] - 1 >= 0):
-                    if (location[0], location[1]-1) not in enemies and (location[0], location[1]-1) not in friends\
-                    and (location[0], location[1]-1) not in black_total_moves:
-                        black_total_moves.append((location[0], location[1]-1))
-                    if (location[0]+1, location[1]-1) in enemies and (location[0]+1, location[1]-1) not in black_total_moves:
-                        black_total_moves.append((location[0]+1, location[1]-1))
-                    if (location[0]-1, location[1]-1) in enemies and (location[0]-1, location[1]-1) not in black_total_moves:
-                        black_total_moves.append((location[0]-1, location[1]-1))
+                if (location[1] + 1 >= 0):
+                    if (location[0], location[1]+1) not in enemies and (location[0], location[1]+1) not in friends\
+                    and (location[0], location[1]+1) not in black_total_moves:
+                        black_total_moves.append((location[0], location[1]+1))
+                    if (location[0]+1, location[1]+1) in enemies and (location[0]+1, location[1]+1) not in black_total_moves:
+                        black_total_moves.append((location[0]+1, location[1]+1))
+                    if (location[0]-1, location[1]+1) in enemies and (location[0]-1, location[1]+1) not in black_total_moves:
+                        black_total_moves.append((location[0]-1, location[1]+1))
         elif selected[1] == 'castle':
             x = black_locations[selected[0]][0]
             y = black_locations[selected[0]][1]
@@ -1195,6 +1194,7 @@ def undoaction():
 
     movement = log_list.pop()
     redo_list.push(movement)
+    f.write("\n---------------->undo")
 
     if movement.piece_color == "white":
         #action for check castling function
@@ -1217,7 +1217,7 @@ def undoaction():
                 lost_pieces_black.remove(movement.lost_piece)
             turn = movement.piece_color
         
-        if (movement.piece_name=="king" and movement.start==(4,7)):
+        if (movement.piece_name=="king"):
             white_king_moves-=1
         
         if movement.piece_name=="castle" and movement.start==(0,7):
@@ -1247,7 +1247,7 @@ def undoaction():
                 lost_pieces_white.remove(movement.lost_piece)
             turn = movement.piece_color
         
-        if (movement.piece_name=="king" and movement.start==(4,0)):
+        if (movement.piece_name=="king"):
             black_king_moves-=1
 
         if movement.piece_name=="castle" and movement.start==(0,0):
@@ -1264,6 +1264,7 @@ def redoaction():
 
     movement = redo_list.pop()
     log_list.push(movement)
+    f.write("\n---------------->redo")
 
     if movement.piece_color == "white":
         #action for check castling function
@@ -1288,6 +1289,7 @@ def redoaction():
             lost_piece[0] = black_pieces.pop(index2)
             lost_piece[1] = black_locations.pop(index2)
             lost_pieces_black.append(lost_piece)
+            turn = "black"
         
         elif (movement.piece_name=="soldier" and movement.start[0]-1==movement.destination[0] and 
         movement.start[1]-1==movement.destination[1]):  #ex : (3,4) -> (2,3)
@@ -1298,6 +1300,7 @@ def redoaction():
             lost_piece[0] = black_pieces.pop(index2)
             lost_piece[1] = black_locations.pop(index2)
             lost_pieces_black.append(lost_piece)
+            turn = "black"
         
         else:
             index = white_locations.index(movement.start)
@@ -1342,6 +1345,7 @@ def redoaction():
             lost_piece[0] = white_pieces.pop(index2)
             lost_piece[1] = white_locations.pop(index2)
             lost_pieces_white.append(lost_piece)
+            turn = "white"
         
         elif (movement.piece_name=="soldier" and movement.start[0]-1==movement.destination[0] and 
         movement.start[1]+1==movement.destination[1]):   # ex : (3,4) -> (2,5)
@@ -1352,6 +1356,7 @@ def redoaction():
             lost_piece[0] = white_pieces.pop(index2)
             lost_piece[1] = white_locations.pop(index2)
             lost_pieces_white.append(lost_piece)
+            turn = "white"
 
         else:
             index = black_locations.index(movement.start)
@@ -1365,7 +1370,7 @@ def redoaction():
             turn = "white"
 
         if (movement.piece_name=="king"):
-            black_king_moves+=1   
+            black_king_moves+=1
         
         if movement.piece_name=="castle" and movement.start==(0,0):
             left_black_castle_moves += 1
@@ -1411,9 +1416,6 @@ def check_castling():
         if (6,0) not in allowed_moves:
             allowed_moves.append((6, 0))
             
-
-
-
 
 
 white_win = False
@@ -1741,9 +1743,9 @@ while running and black_win == False  and  white_win == False:
                     
                     else:
                         #action for check castling function
-                        if selected_piece[1]=="castle":
+                        if selected_piece[1]=="castle" and white_locations[selected_piece[0]]==(0,7):
                             left_white_castle_moves += 1
-                        if selected_piece[1]=="castle":
+                        if selected_piece[1]=="castle" and white_locations[selected_piece[0]]==(7,7):
                             right_white_castle_moves += 1
                         if selected_piece[1]=="king":
                             white_king_moves += 1
